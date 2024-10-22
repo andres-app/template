@@ -58,8 +58,7 @@
                                                         <th>Nombre</th>
                                                         <th>Correo</th>
                                                         <th>Fech.Creación</th>
-                                                        <th></th>
-                                                        <th></th>
+                                                        <th>Acciones</th>
                                                     </tr>
                                                 </thead>
 

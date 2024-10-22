@@ -29,9 +29,9 @@
                 $sub_array = array();
                 $sub_array[]= $row["rol_nom"];
                 $sub_array[]= $row["fech_crea"];
-                $sub_array[]= '<button type="button" class="btn btn-soft-info waves-effect waves-light btn-sm" onClick="permiso('.$row["rol_id"].')"><i class="bx bx-shield-quarter font-size-16 align-middle"></i></button>';
-                $sub_array[]= '<button type="button" class="btn btn-soft-warning waves-effect waves-light btn-sm" onClick="editar('.$row["rol_id"].')"><i class="bx bx-edit-alt font-size-16 align-middle"></i></button>';
-                $sub_array[]= '<button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onClick="eliminar('.$row["rol_id"].')"><i class="bx bx-trash-alt font-size-16 align-middle"></i></button>';
+                $sub_array[]= '<button type="button" class="btn btn-soft-info waves-effect waves-light btn-sm" onClick="permiso('.$row["rol_id"].')"><i class="bx bx-shield-quarter font-size-16 align-middle"></i></button>
+                <button type="button" class="btn btn-soft-warning waves-effect waves-light btn-sm" onClick="editar('.$row["rol_id"].')"><i class="bx bx-edit-alt font-size-16 align-middle"></i></button>
+                <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onClick="eliminar('.$row["rol_id"].')"><i class="bx bx-trash-alt font-size-16 align-middle"></i></button>';
                 $data[]=$sub_array;
             }
 

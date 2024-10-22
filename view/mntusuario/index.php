@@ -2,7 +2,7 @@
     require_once("../../config/conexion.php");
     require_once("../../models/Rol.php");
     $rol = new Rol();
-    $datos = $rol->validar_menu_x_rol($_SESSION["rol_id"],"mntcolaborador");
+    $datos = $rol->validar_menu_x_rol($_SESSION["rol_id"],"mntusuario");
     if(isset($_SESSION["usu_id"]) and count($datos)>0){
 ?>
 <!doctype html>
@@ -59,9 +59,7 @@
                                                         <th>Correo</th>
                                                         <th>Rol</th>
                                                         <th>Fech.Creación</th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
+                                                        <th>Acciones</th>
                                                     </tr>
                                                 </thead>
 
