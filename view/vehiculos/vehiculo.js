@@ -9,6 +9,32 @@ function init() {
     });
 }
 
+// Función para guardar o editar un vehículo
+function guardaryeditar(e) {
+    e.preventDefault();
+    
+    var formData = new FormData($("#mnt_form")[0]);
+
+    // Enviar los datos mediante AJAX
+    $.ajax({
+        url: "../../controller/vehiculo.php?op=insertar", // URL del controlador para insertar
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(datos) {
+            Swal.fire('Registro', 'Vehículo registrado correctamente', 'success');
+            tabla.ajax.reload(); // Recargar el DataTable
+            $("#mnt_modal").modal("hide"); // Cerrar el modal
+        },
+        error: function(e) {
+            Swal.fire('Error', 'No se pudo registrar el vehículo', 'error');
+            console.log(e.responseText);
+        }
+    });
+}
+
+
 // Configuración del DataTable cuando el documento esté listo
 $(document).ready(function() { 
     // Inicialización del DataTable con configuraciones personalizadas

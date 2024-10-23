@@ -1,12 +1,8 @@
 <?php
-// Importar los archivos necesarios para la conexión y el modelo de Vehiculo
 require_once("../config/conexion.php");
 require_once("../models/Vehiculo.php");
-
-// Crear una instancia del modelo Vehiculo
 $vehiculo = new Vehiculo();
 
-// Verificar el parámetro 'op' pasado por GET para determinar la operación a realizar
 switch ($_GET["op"]) {
 
     // Caso para listar todos los vehículos
@@ -16,7 +12,6 @@ switch ($_GET["op"]) {
         
         // Verificar si hubo algún error al obtener los datos
         if ($datos === false) {
-            // Si ocurre un error, devolver un mensaje de error en formato JSON y detener la ejecución
             echo json_encode(["error" => "Error al obtener los vehículos"]);
             exit;
         }
@@ -28,12 +23,12 @@ switch ($_GET["op"]) {
         foreach ($datos as $row) {
             // Crear un array temporal para cada fila
             $sub_array = array();
-            $sub_array[] = $row["placa"]; // Placa del vehículo
-            $sub_array[] = $row["marca"]; // Marca del vehículo
-            $sub_array[] = $row["modelo"]; // Modelo del vehículo
-            $sub_array[] = $row["anio"]; // Año del vehículo
-            $sub_array[] = $row["ultimo_mantenimiento"]; // Último mantenimiento
-            $sub_array[] = $row["proximo_mantenimiento"]; // Próximo mantenimiento
+            $sub_array[] = $row["placa"];
+            $sub_array[] = $row["marca"];
+            $sub_array[] = $row["modelo"];
+            $sub_array[] = $row["anio"];
+            $sub_array[] = $row["ultimo_mantenimiento"];
+            $sub_array[] = $row["proximo_mantenimiento"];
             
             // Botones de acción para editar y eliminar el vehículo
             $sub_array[] = '
@@ -61,18 +56,46 @@ switch ($_GET["op"]) {
         echo json_encode($results);
         break;
 
-    // Otros casos para manejar distintas operaciones como mostrar, eliminar, etc.
-    case "mostrar":
-        // Código para mostrar un vehículo (por implementar)
-        break;
-    
-    case "eliminar":
-        // Código para eliminar un vehículo (por implementar)
-        break;
+// Caso para insertar un nuevo vehículo
+case "insertar":
+    // Capturar los datos enviados por el formulario
+    $placa = isset($_POST["vehiculo_placa"]) ? $_POST["vehiculo_placa"] : null;
+    $marca = isset($_POST["vehiculo_marca"]) ? $_POST["vehiculo_marca"] : null;
+    $modelo = isset($_POST["vehiculo_modelo"]) ? $_POST["vehiculo_modelo"] : null;
+    $anio = isset($_POST["vehiculo_anio"]) ? $_POST["vehiculo_anio"] : null;
+    $color = isset($_POST["vehiculo_color"]) ? $_POST["vehiculo_color"] : null;
+    $motor = isset($_POST["vehiculo_motor"]) ? $_POST["vehiculo_motor"] : null;
+    $combustible = isset($_POST["vehiculo_combustible"]) ? $_POST["vehiculo_combustible"] : null;
+    $tipo = isset($_POST["vehiculo_tipo"]) ? $_POST["vehiculo_tipo"] : null;
+    $ultimo_mantenimiento = isset($_POST["vehiculo_ultimo_mantenimiento"]) ? $_POST["vehiculo_ultimo_mantenimiento"] : null;
+    $proximo_mantenimiento = isset($_POST["vehiculo_proximo_mantenimiento"]) ? $_POST["vehiculo_proximo_mantenimiento"] : null;
+    $poliza = isset($_POST["vehiculo_poliza"]) ? $_POST["vehiculo_poliza"] : null;
+    $estado = isset($_POST["vehiculo_estado"]) ? $_POST["vehiculo_estado"] : null;
 
-    // Caso por defecto si la operación solicitada no es válida
-    default:
-        echo json_encode(["error" => "Operación no válida."]);
-        break;
-}
+    // Depurar los datos antes de la inserción
+    var_dump($_POST); // Verifica que los datos lleguen correctamente desde el formulario
+
+    // Insertar nuevo vehículo
+    if ($vehiculo->insertar_vehiculo($placa, $marca, $modelo, $anio, $color, $motor, $combustible, $tipo, $ultimo_mantenimiento, $proximo_mantenimiento, $poliza, $estado)) {
+        echo json_encode(["success" => "Vehículo registrado correctamente."]);
+    } else {
+        echo json_encode(["error" => "Error al registrar el vehículo."]);
+    }
+    break;
+
+
+        // Otros casos para manejar distintas operaciones como mostrar, eliminar, etc.
+        case "mostrar":
+            // Código para mostrar un vehículo (por implementar)
+            break;
+    
+        case "eliminar":
+            // Código para eliminar un vehículo (por implementar)
+            break;
+
+        // Caso por defecto si la operación solicitada no es válida
+        default:
+            echo json_encode(["error" => "Operación no válida."]);
+            break;
+    }
 ?>
