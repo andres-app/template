@@ -1,10 +1,11 @@
 <!-- Modal para el registro y edición de vehículos -->
 <div id="mnt_modal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl"> <!-- modal-xl para un modal más grande -->
+    <div class="modal-dialog modal-xl"> <!-- modal-xl para hacer el modal más grande -->
+        
         <!-- Formulario para el registro o edición de vehículos -->
         <form method="post" id="mnt_form">
             <div class="modal-content">
-                
+
                 <!-- Encabezado del modal -->
                 <div class="modal-header">
                     <h5 class="modal-title" id="myModalLabel">Registro de Vehículo</h5>
@@ -13,10 +14,11 @@
 
                 <!-- Cuerpo del modal -->
                 <div class="modal-body">
-                    <!-- Campo oculto para el ID del vehículo (se usa al editar un registro) -->
+
+                    <!-- Campo oculto para el ID del vehículo (se usa en caso de edición) -->
                     <input type="hidden" id="vehiculo_id" name="vehiculo_id">
 
-                    <!-- Fila 1: Placa y Marca -->
+                    <!-- Fila 1: Placa y Marca del vehículo -->
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="vehiculo_placa" class="form-label">Placa (*)</label>
@@ -28,7 +30,7 @@
                         </div>
                     </div>
 
-                    <!-- Fila 2: Modelo y Año -->
+                    <!-- Fila 2: Modelo y Año del vehículo -->
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="vehiculo_modelo" class="form-label">Modelo (*)</label>
@@ -40,7 +42,7 @@
                         </div>
                     </div>
 
-                    <!-- Fila 3: Color y Motor -->
+                    <!-- Fila 3: Color y Motor del vehículo -->
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="vehiculo_color" class="form-label">Color</label>
@@ -52,7 +54,7 @@
                         </div>
                     </div>
 
-                    <!-- Fila 4: Combustible y Tipo de Vehículo -->
+                    <!-- Fila 4: Tipo de combustible y Tipo de vehículo -->
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="vehiculo_combustible" class="form-label">Combustible</label>
@@ -68,7 +70,7 @@
                         </div>
                     </div>
 
-                    <!-- Fila 5: Último y Próximo Mantenimiento -->
+                    <!-- Fila 5: Fechas de mantenimiento del vehículo -->
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="vehiculo_ultimo_mantenimiento" class="form-label">Último Mantenimiento</label>
@@ -80,7 +82,7 @@
                         </div>
                     </div>
 
-                    <!-- Fila 6: Póliza y Estado -->
+                    <!-- Fila 6: Póliza del vehículo y estado (activo/inactivo) -->
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="vehiculo_poliza" class="form-label">Póliza</label>
@@ -95,9 +97,9 @@
                         </div>
                     </div>
 
-                </div>
+                </div> <!-- Fin del cuerpo del modal -->
 
-                <!-- Pie del modal -->
+                <!-- Pie del modal (botones de acción) -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">Guardar</button>

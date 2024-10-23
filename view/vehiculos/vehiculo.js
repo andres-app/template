@@ -1,7 +1,10 @@
 // Variable global para la tabla del DataTable
 var tabla;
 
-// Función de inicialización
+/**
+ * Función de inicialización principal.
+ * Se configura el evento 'submit' para el formulario de creación o edición de vehículos.
+ */
 function init() {
     // Configuración del evento submit para el formulario de creación o edición
     $("#mnt_form").on("submit", function(e) {
@@ -9,33 +12,43 @@ function init() {
     });
 }
 
-// Función para guardar o editar un vehículo
+/**
+ * Función para guardar o editar un vehículo.
+ * Se envían los datos del formulario mediante AJAX al controlador PHP.
+ *
+ * @param {Event} e - Evento de envío del formulario.
+ */
 function guardaryeditar(e) {
-    e.preventDefault();
-    
-    var formData = new FormData($("#mnt_form")[0]);
+    e.preventDefault(); // Evitar el comportamiento por defecto del formulario
+
+    var formData = new FormData($("#mnt_form")[0]); // Crear un objeto FormData con los datos del formulario
 
     // Enviar los datos mediante AJAX
     $.ajax({
-        url: "../../controller/vehiculo.php?op=insertar", // URL del controlador para insertar
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
+        url: "../../controller/vehiculo.php?op=insertar", // URL del controlador para insertar el vehículo
+        type: "POST", // Método de envío de datos
+        data: formData, // Datos del formulario
+        contentType: false, // No establecer ningún tipo de contenido para los datos
+        processData: false, // No procesar los datos automáticamente (para permitir el uso de FormData)
         success: function(datos) {
+            // Mostrar un mensaje de éxito usando SweetAlert
             Swal.fire('Registro', 'Vehículo registrado correctamente', 'success');
-            tabla.ajax.reload(); // Recargar el DataTable
-            $("#mnt_modal").modal("hide"); // Cerrar el modal
+            // Recargar el DataTable para mostrar el nuevo registro
+            tabla.ajax.reload();
+            // Cerrar el modal de registro
+            $("#mnt_modal").modal("hide");
         },
         error: function(e) {
+            // Mostrar un mensaje de error en caso de que falle la inserción
             Swal.fire('Error', 'No se pudo registrar el vehículo', 'error');
-            console.log(e.responseText);
         }
     });
 }
 
-
-// Configuración del DataTable cuando el documento esté listo
+/**
+ * Configuración del DataTable para listar los vehículos registrados.
+ * Se configura la tabla con opciones de exportación y búsqueda.
+ */
 $(document).ready(function() { 
     // Inicialización del DataTable con configuraciones personalizadas
     tabla = $("#listado_table").DataTable({
@@ -52,11 +65,11 @@ $(document).ready(function() {
             'pdfHtml5'           // Exportar a PDF
         ],
         "ajax": {
-            url: '../../controller/vehiculo.php?op=listar', // URL del controlador PHP para listar los vehículos
+            url: '../../controller/vehiculo.php?op=listar', // URL del controlador para listar los vehículos
             type: "GET",         // Método de la petición
-            dataType: "json",     // Tipo de datos esperados
+            dataType: "json",    // Tipo de datos esperados
             error: function(e) {  // Manejo de errores
-                console.log(e.responseText); // Imprime el error en la consola
+                Swal.fire('Error', 'No se pudo cargar la lista de vehículos', 'error');
             }
         },
         "bDestroy": true,        // Permite destruir el DataTable y volver a inicializarlo
@@ -74,10 +87,7 @@ $(document).ready(function() {
             "sInfo": "Mostrando un total de _TOTAL_ registros",
             "sInfoEmpty": "Mostrando un total de 0 registros",
             "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-            "sInfoPostFix": "",
             "sSearch": "Buscar:",
-            "sUrl": "",
-            "sInfoThousands": ",",
             "sLoadingRecords": "Cargando...",
             "oPaginate": {
                 "sFirst": "Primero",
@@ -93,9 +103,12 @@ $(document).ready(function() {
     });
 });
 
-// Evento para mostrar el modal al crear un nuevo registro
+/**
+ * Evento para mostrar el modal cuando se hace clic en el botón "Nuevo Registro".
+ * Se limpia el formulario y se prepara el modal para la creación de un nuevo vehículo.
+ */
 $("#btnnuevo").on("click", function() {
-    $("#vehiculo_id").val('');   // Limpia el campo de ID de vehículo
+    $("#vehiculo_id").val('');   // Limpiar el campo de ID del vehículo
     $("#mnt_form")[0].reset();   // Resetea el formulario
     $("#myModalLabel").html('Nuevo Registro'); // Cambia el título del modal
     $("#mnt_modal").modal('show'); // Muestra el modal de registro
