@@ -1,131 +1,79 @@
+// Variable global para la tabla del DataTable
 var tabla;
 
-function init(){
-        // Configuración para guardar o editar
-    $("#mnt_form").on("submit",function(e){
-        guardaryeditar(e);
+// Función de inicialización
+function init() {
+    // Configuración del evento submit para el formulario de creación o edición
+    $("#mnt_form").on("submit", function(e) {
+        guardaryeditar(e); // Llamar a la función para guardar o editar un registro
     });
 }
 
-function guardaryeditar(e){
-    e.preventDefault();
-    var formData = new FormData($("#mnt_form")[0]);
-    $.ajax({
-        url:"../../controller/vehiculo.php?op=guardaryeditar",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(datos){
-            console.log(datos);
-            if(datos == 1){
-                $("#vehiculo_id").val('');
-                $("#mnt_form")[0].reset();
-                $("#listado_table").DataTable().ajax.reload();
-                $("#mnt_modal").modal('hide');
-                Swal.fire({
-                    title: "TEMPLATE",
-                    html: "Se registró con éxito.",
-                    icon: "success",
-                    confirmButtonColor: "#5156be",
-                });
-            }else if(datos == 0){
-                Swal.fire({
-                    title: "Vehículo",
-                    html: "Registro ya existe, por favor validar.",
-                    icon: "error",
-                    confirmButtonColor: "#5156be",
-                });
-            }else if(datos == 2){
-                $("#vehiculo_id").val('');
-                $("#mnt_form")[0].reset();
-                $("#listado_table").DataTable().ajax.reload();
-                $("#mnt_modal").modal('hide');
-                Swal.fire({
-                    title: "Vehículo",
-                    html: "Se actualizó con éxito.",
-                    icon: "success",
-                    confirmButtonColor: "#5156be",
-                });
-            }
-        }
-    });
-}
-
-$(document).ready(function(){ 
+// Configuración del DataTable cuando el documento esté listo
+$(document).ready(function() { 
+    // Inicialización del DataTable con configuraciones personalizadas
     tabla = $("#listado_table").DataTable({
-        "aProcessing": true,
-        "aServerSide": true,
-        dom: 'Bfrtip',
-        "searching": true,
-        lengthChange: false,
-        colReorder: true,
-        buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
+        "aProcessing": true,     // Activa el procesamiento en el lado del cliente
+        "aServerSide": true,     // Activa el procesamiento en el lado del servidor
+        dom: 'Bfrtip',           // Define los elementos de la interfaz del DataTable (Botones, filtro, etc.)
+        "searching": true,       // Habilita la búsqueda en la tabla
+        lengthChange: false,     // Deshabilita la opción para cambiar la cantidad de registros por página
+        colReorder: true,        // Habilita la reordenación de columnas
+        buttons: [               // Botones de exportación
+            'copyHtml5',         // Copiar a portapapeles
+            'excelHtml5',        // Exportar a Excel
+            'csvHtml5',          // Exportar a CSV
+            'pdfHtml5'           // Exportar a PDF
         ],
-        "ajax":{
-            url: '../../controller/vehiculo.php?op=listar',
-            type : "GET",
-            dataType : "json",
-            error:function(e){
-                console.log(e.responseText);
+        "ajax": {
+            url: '../../controller/vehiculo.php?op=listar', // URL del controlador PHP para listar los vehículos
+            type: "GET",         // Método de la petición
+            dataType: "json",     // Tipo de datos esperados
+            error: function(e) {  // Manejo de errores
+                console.log(e.responseText); // Imprime el error en la consola
             }
         },
-        "bDestroy": true,
-        "responsive": true,
-        "bInfo":true,
-        "iDisplayLength": 10,
-        "autoWidth": false,
+        "bDestroy": true,        // Permite destruir el DataTable y volver a inicializarlo
+        "responsive": true,      // Hace que la tabla sea responsiva
+        "bInfo": true,           // Muestra información sobre el DataTable (cantidad de registros, etc.)
+        "iDisplayLength": 10,    // Define el número de registros a mostrar por página
+        "autoWidth": false,      // Desactiva el ajuste automático del ancho de las columnas
+
+        // Configuraciones de idioma para traducir los textos a español
         "language": {
-            "sProcessing":     "Procesando...",
-            "sLengthMenu":     "Mostrar _MENU_ registros",
-            "sZeroRecords":    "No se encontraron resultados",
-            "sEmptyTable":     "Ningún dato disponible en esta tabla",
-            "sInfo":           "Mostrando un total de _TOTAL_ registros",
-            "sInfoEmpty":      "Mostrando un total de 0 registros",
-            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-            "sInfoPostFix":    "",
-            "sSearch":         "Buscar:",
-            "sUrl":            "",
-            "sInfoThousands":  ",",
+            "sProcessing": "Procesando...",
+            "sLengthMenu": "Mostrar _MENU_ registros",
+            "sZeroRecords": "No se encontraron resultados",
+            "sEmptyTable": "Ningún dato disponible en esta tabla",
+            "sInfo": "Mostrando un total de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando un total de 0 registros",
+            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "sSearch": "Buscar:",
+            "sUrl": "",
+            "sInfoThousands": ",",
             "sLoadingRecords": "Cargando...",
             "oPaginate": {
-                "sFirst":    "Primero",
-                "sLast":     "Último",
-                "sNext":     "Siguiente",
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
                 "sPrevious": "Anterior"
             },
             "oAria": {
-                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
                 "sSortDescending": ": Activar para ordenar la columna de manera descendente"
             }
         }
     });
 });
 
-// Mostrar el modal para crear un nuevo proceso
+// Evento para mostrar el modal al crear un nuevo registro
 $("#btnnuevo").on("click", function() {
-    $("#vehiculo_id").val('');
-    $("#mnt_form")[0].reset();
-    $("#myModalLabel").html('Nuevo Registro');
-    $("#mnt_modal").modal('show');
+    $("#vehiculo_id").val('');   // Limpia el campo de ID de vehículo
+    $("#mnt_form")[0].reset();   // Resetea el formulario
+    $("#myModalLabel").html('Nuevo Registro'); // Cambia el título del modal
+    $("#mnt_modal").modal('show'); // Muestra el modal de registro
 });
 
-function editar(vehiculo_id){
-    $("#myModalLabel").html('Editar Registro');
-    $.post("../../controller/vehiculo.php?op=mostrar",{vehiculo_id:vehiculo_id},function(data){
-        data=JSON.parse(data);
-        $("#vehiculo_id").val(data.vehiculo_id);
-        $("#vehiculo_placa").val(data.vehiculo_placa);
-        $("#vehiculo_marca").val(data.vehiculo_marca);
-        $("#vehiculo_modelo").val(data.vehiculo_modelo);
-        $("#vehiculo_anio").val(data.vehiculo_anio);
-        $("#mnt_modal").modal('show');
-    });
-}
-
-
+// Llamada a la función de inicialización
 init();

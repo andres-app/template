@@ -1,66 +1,47 @@
 <?php
+
+// Clase Vehiculo que hereda de la clase Conectar
 class Vehiculo extends Conectar
 {
+    /**
+     * Método para obtener todos los vehículos registrados en la base de datos.
+     *
+     * @return array Listado de vehículos con sus respectivos datos:
+     *               - id: Identificador del vehículo.
+     *               - placa: Número de placa del vehículo.
+     *               - marca: Marca del vehículo.
+     *               - modelo: Modelo del vehículo.
+     *               - anio: Año de fabricación del vehículo.
+     *               - ultimo_mantenimiento: Fecha del último mantenimiento realizado.
+     *               - proximo_mantenimiento: Fecha prevista para el próximo mantenimiento.
+     */
     public function get_vehiculos()
     {
+        // Establecer la conexión con la base de datos
         $conectar = parent::conexion();
+
+        // Configurar los nombres de los caracteres correctos para evitar problemas con la codificación
         parent::set_names();
 
+        // Definir la consulta SQL para obtener los datos de los vehículos
+        $sql = "SELECT 
+                    id, 
+                    placa, 
+                    marca, 
+                    modelo, 
+                    anio, 
+                    ultimo_mantenimiento, 
+                    proximo_mantenimiento 
+                FROM vehiculos";
 
-        $sql = "SELECT id, placa, marca, modelo, anio FROM vehiculos";
+        // Preparar la consulta SQL
         $stmt = $conectar->prepare($sql);
+
+        // Ejecutar la consulta SQL
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);  // Asegúrate de que se estén devolviendo los datos correctamente
-    }
-
-
-    public function insert_vehiculo($vehiculo_placa, $vehiculo_marca, $vehiculo_modelo, $vehiculo_anio)
-    {
-        $conectar = parent::conexion();
-        parent::set_names();
-        $sql = "INSERT INTO tm_vehiculo (vehiculo_placa, vehiculo_marca, vehiculo_modelo, vehiculo_anio) VALUES (?,?,?,?)";
-        $sql = $conectar->prepare($sql);
-        $sql->bindValue(1, $vehiculo_placa);
-        $sql->bindValue(2, $vehiculo_marca);
-        $sql->bindValue(3, $vehiculo_modelo);
-        $sql->bindValue(4, $vehiculo_anio);
-        $sql->execute();
-    }
-
-    public function update_vehiculo($vehiculo_id, $vehiculo_placa, $vehiculo_marca, $vehiculo_modelo, $vehiculo_anio)
-    {
-        $conectar = parent::conexion();
-        parent::set_names();
-        $sql = "UPDATE tm_vehiculo SET vehiculo_placa=?, vehiculo_marca=?, vehiculo_modelo=?, vehiculo_anio=?, fech_modi=NOW() WHERE vehiculo_id=?";
-        $sql = $conectar->prepare($sql);
-        $sql->bindValue(1, $vehiculo_placa);
-        $sql->bindValue(2, $vehiculo_marca);
-        $sql->bindValue(3, $vehiculo_modelo);
-        $sql->bindValue(4, $vehiculo_anio);
-        $sql->bindValue(5, $vehiculo_id);
-        $sql->execute();
-    }
-
-    public function get_vehiculo_x_id($vehiculo_id)
-    {
-        $conectar = parent::conexion();
-        parent::set_names();
-        $sql = "SELECT * FROM tm_vehiculo WHERE vehiculo_id=?";
-        $sql = $conectar->prepare($sql);
-        $sql->bindValue(1, $vehiculo_id);
-        $sql->execute();
-        return $sql->fetchAll();
-    }
-
-    public function eliminar_vehiculo($vehiculo_id)
-    {
-        $conectar = parent::conexion();
-        parent::set_names();
-        $sql = "UPDATE tm_vehiculo SET est=0, fech_elim=NOW() WHERE vehiculo_id=?";
-        $sql = $conectar->prepare($sql);
-        $sql->bindValue(1, $vehiculo_id);
-        $sql->execute();
+        // Retornar los resultados como un array asociativo
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>

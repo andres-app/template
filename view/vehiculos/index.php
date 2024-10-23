@@ -1,36 +1,48 @@
 <?php
+    // Requerimos los archivos necesarios para la conexión y el modelo de Rol
     require_once("../../config/conexion.php");
     require_once("../../models/Rol.php");
+
+    // Crear una instancia de Rol para validar permisos
     $rol = new Rol();
-    $datos = $rol->validar_menu_x_rol($_SESSION["rol_id"],"vehiculos");
-    
-    if(isset($_SESSION["usu_id"]) and count($datos)>0){
+
+    // Validar si el rol del usuario tiene acceso al módulo de "vehículos"
+    $datos = $rol->validar_menu_x_rol($_SESSION["rol_id"], "vehiculos");
+
+    // Verificar si el usuario está autenticado y si tiene permisos para acceder al módulo
+    if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
 ?>
+
 <!doctype html>
 <html lang="es">
     <head>
-        <title> Mnt.Vehículo DIGESE</title>
-        <?php require_once("../html/head.php")?>
+        <!-- Título de la página -->
+        <title>Mnt.Vehículo DIGESE</title>
+        
+        <!-- Incluir los archivos del head -->
+        <?php require_once("../html/head.php") ?>
     </head>
 
     <body>
 
         <div id="layout-wrapper">
 
-            <?php require_once("../html/header.php")?>
+            <!-- Incluir el header -->
+            <?php require_once("../html/header.php") ?>
 
-            <?php require_once("../html/menu.php")?>
+            <!-- Incluir el menú de navegación -->
+            <?php require_once("../html/menu.php") ?>
 
             <div class="main-content">
 
                 <div class="page-content">
                     <div class="container-fluid">
 
+                        <!-- Título y breadcrumb de la página -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                                     <h4 class="mb-sm-0 font-size-18">Lista de Vehículos</h4>
-
                                     <div class="page-title-right">
                                         <ol class="breadcrumb m-0">
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
@@ -39,106 +51,77 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="card-title">Vehículo</h4>
-                                            <p class="card-title-desc">(*) Vista para Registrar, Modificar, Listar y Eliminar. </p>
-                                        </div>
+                        <!-- Sección principal de la página -->
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Vehículo</h4>
+                                        <p class="card-title-desc">(*) Vista para Registrar, Modificar, Listar y Eliminar.</p>
+                                    </div>
 
-                                        <div class="card-body">
-                                            <button type="button" id="btnnuevo" class="btn btn-primary waves-effect waves-light">Nuevo Registro</button>
-                                            <br>
-                                            <br>
-                                            <table id="listado_table" class="table table-bordered dt-responsive  nowrap w-100">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Placa</th>
-                                                        <th>Marca</th>
-                                                        <th>Modelo</th>
-                                                        <th>Año</th>
-                                                        <th>Acciones</th>
-                                                    </tr>
-                                                </thead>
+                                    <div class="card-body">
+                                        <!-- Botón para agregar un nuevo vehículo -->
+                                        <button type="button" id="btnnuevo" class="btn btn-primary waves-effect waves-light">
+                                            Nuevo Registro
+                                        </button>
+                                        <br><br>
 
-                                                <tbody>
+                                        <!-- Tabla para listar los vehículos -->
+                                        <table id="listado_table" class="table table-bordered dt-responsive nowrap w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th>Placa</th>
+                                                    <th>Marca</th>
+                                                    <th>Modelo</th>
+                                                    <th>Año</th>
+                                                    <th>Último Mantenimiento</th>
+                                                    <th>Próximo Mantenimiento</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
 
-                                                </tbody>
-                                            </table>
-                                        </div>
-
+                                            <tbody>
+                                                <!-- Aquí se llenará la tabla con los datos -->
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                            
                         </div>
+                        
+                    </div> <!-- Container-fluid -->
+                </div> <!-- Page-content -->
 
-                    </div>
-                </div>
+                <!-- Incluir el footer -->
+                <?php require_once("../html/footer.php") ?>
 
-                <?php require_once("../html/footer.php")?>
+            </div> <!-- Main-content -->
 
-            </div>
+        </div> <!-- Layout-wrapper -->
 
-        </div>
+        <!-- Incluir el modal para el formulario de vehículo -->
+        <?php require_once("modal_vehiculo.php") ?>
 
-        <?php require_once("modal_vehiculo.php")?>
-
-        <?php require_once("../html/sidebar.php")?>
+        <!-- Incluir la barra lateral -->
+        <?php require_once("../html/sidebar.php") ?>
 
         <div class="rightbar-overlay"></div>
 
-        <?php require_once("../html/js.php")?>
+        <!-- Incluir los scripts JS -->
+        <?php require_once("../html/js.php") ?>
 
+        <!-- Incluir el script de la página para manejar los vehículos -->
         <script type="text/javascript" src="vehiculo.js"></script>
 
     </body>
 </html>
+
 <?php
-  }else{
-    header("Location:".Conectar::ruta()."index.php");
-  }
+    } else {
+        // Redirigir al usuario al inicio de sesión si no tiene acceso o no está autenticado
+        header("Location:" . Conectar::ruta() . "index.php");
+    }
 ?>
-
-<div id="mnt_modal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="post" id="mnt_form">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="myModalLabel"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="vehiculo_id" name="vehiculo_id">
-
-                    <div class="mb-3">
-                        <label for="form-label" class="form-label">Placa (*)</label>
-                        <input class="form-control" type="text" name="vehiculo_placa" id="vehiculo_placa" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="form-label" class="form-label">Marca (*)</label>
-                        <input class="form-control" type="text" name="vehiculo_marca" id="vehiculo_marca" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="form-label" class="form-label">Modelo (*)</label>
-                        <input class="form-control" type="text" name="vehiculo_modelo" id="vehiculo_modelo" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="form-label" class="form-label">Año (*)</label>
-                        <input class="form-control" type="number" name="vehiculo_anio" id="vehiculo_anio" required>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">Guardar</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
