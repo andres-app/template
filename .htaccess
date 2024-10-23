@@ -1,5 +1,5 @@
 RewriteEngine On
 
-# Redirigir de /template/ a /template/view/accesopersonal/
-RewriteCond %{REQUEST_URI} ^/template/?$
-RewriteRule ^(.*)$ /template/view/accesopersonal/ [L,R=301]
+# Redirigir de /flota/ a /flota/view/accesopersonal/
+RewriteCond %{REQUEST_URI} ^/flota/?$
+RewriteRule ^(.*)$ /flota/view/accesopersonal/ [L,R=301]

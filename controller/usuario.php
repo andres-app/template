@@ -263,7 +263,7 @@ switch ($_GET["op"]) {
             // Verifica si es producción o localhost
             if ($host == 'localhost') {
                 // Redirección para localhost
-                $url = "http://localhost/template" . $uri;
+                $url = "http://localhost/flota" . $uri;
             } else {
                 // Redirección manual para producción
                 $url = "https://$host" . $uri;  // En producción, eliminamos el subdirectorio template

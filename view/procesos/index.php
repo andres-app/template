@@ -53,14 +53,13 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
                                                     class="btn btn-primary waves-effect waves-light">Nuevo Registro</button>
                                                 <br>
                                                 <br>
-                                                <table id="listado_table"
-                                                    class="table table-bordered dt-responsive  nowrap w-100">
+                                                <table id="listado_table" class="table table-bordered dt-responsive  nowrap w-100">
                                                     <thead>
                                                         <tr>
                                                             <th>Nombre</th>
                                                             <th>Correo</th>
                                                             <th>Fech.Creación</th>
-                                                            <th></th>
+                                                            <th>Acciones</th>
                                                         </tr>
                                                     </thead>
 

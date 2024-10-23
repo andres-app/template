@@ -13,7 +13,7 @@
                 /* TODO: Detectar entorno */
                 if ($_SERVER['HTTP_HOST'] == 'localhost') {
                     /* Configuración para el entorno de desarrollo (localhost) */
-                    $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=templatedb","root","");
+                    $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=flota","root","");
                 } else {
                     /* Configuración para el entorno de producción */
                     $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=iespplamas_template","iespplamas_template","Dig3s3w3b$$$");
@@ -36,7 +36,7 @@
         public static function ruta(){
             if ($_SERVER['HTTP_HOST'] == 'localhost') {
                 /* Ruta para el entorno de desarrollo */
-                return "http://localhost/template/";
+                return "http://localhost/flota/";
             } else {
                 /* Ruta para el entorno de producción */
                 return "https://web.TEMPLATEseho.edu.pe/";
