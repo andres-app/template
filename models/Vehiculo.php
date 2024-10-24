@@ -133,6 +133,23 @@ class Vehiculo extends Conectar
         }
     }
 
+    public function get_proximos_mantenimientos() {
+        $conectar = parent::conexion();
+        parent::set_names();
+    
+        // Consultar los vehículos cuyo próximo mantenimiento sea en los próximos 30 días
+        $sql = "SELECT id, placa, marca, modelo, anio, proximo_mantenimiento 
+                FROM vehiculos 
+                WHERE estado = 1 AND proximo_mantenimiento <= CURDATE() + INTERVAL 30 DAY
+                ORDER BY proximo_mantenimiento ASC";
+    
+        $stmt = $conectar->prepare($sql);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+
 
 
 }

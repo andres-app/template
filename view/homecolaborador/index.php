@@ -1,9 +1,17 @@
 <?php
 require_once("../../config/conexion.php");
+require_once("../../models/Vehiculo.php");
 require_once("../../models/Rol.php");
+
 $rol = new Rol();
 $datos = $rol->validar_menu_x_rol($_SESSION["rol_id"], "iniciocolaborador");
-if (isset($_SESSION["usu_id"]) and count($datos) > 0) {
+
+if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
+    // Crear instancia del modelo Vehículo
+    $vehiculo = new Vehiculo();
+    
+    // Obtener vehículos con próximos mantenimientos
+    $proximos_mantenimientos = $vehiculo->get_proximos_mantenimientos();
     ?>
     <!doctype html>
     <html lang="es">
@@ -26,23 +34,88 @@ if (isset($_SESSION["usu_id"]) and count($datos) > 0) {
                 <div class="page-content">
                     <div class="container-fluid">
 
+                        <!-- Título de la página -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                    <h4 class="mb-sm-0 font-size-18">Inicio Colaborador</h4>
-
-
+                                    <h4 class="mb-sm-0 font-size-18">DASHBOARD</h4>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="card border border-primary">
-                                <div class="card-header bg-transparent border-primary">
-                                    <h5 class="my-0 text-primary"><i class="mdi mdi-bullseye-arrow me-3"></i>Estimado colaborador</h5>
+                        <!-- Tarjeta informativa -->
+                        <div class="card border border-primary">
+                            <div class="card-header bg-transparent border-primary">
+                                <h5 class="my-0 text-primary"><i class="mdi mdi-bullseye-arrow me-3"></i>Estimado colaborador</h5>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">¡IMPORTANTE!</h5>
+                                <p class="card-text">Usted únicamente tiene acceso a la información que ha sido específicamente asignada... 
+                                <!-- Continúa el texto que tenías antes -->
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta para mostrar los próximos mantenimientos -->
+                        <div class="row">
+                            <div class="col-xl-4">
+                                <div class="card">
+                                    <div class="card-header align-items-center d-flex">
+                                        <h4 class="card-title mb-0 flex-grow-1">Próximos Mantenimientos</h4>
+                                    </div>
+                                    <div class="card-body px-0">
+                                        <div class="px-3" data-simplebar="" style="max-height: 352px;">
+                                            <ul class="list-unstyled activity-wid mb-0">
+                                                <?php
+                                                if (count($proximos_mantenimientos) > 0) {
+                                                    foreach ($proximos_mantenimientos as $mantenimiento) {
+                                                        ?>
+                                                        <li class="activity-list activity-border">
+                                                            <div class="activity-icon avatar-md">
+                                                                <span class="avatar-title bg-soft-warning text-warning rounded-circle">
+                                                                    <i class="bx bx-wrench font-size-24"></i>
+                                                                </span>
+                                                            </div>
+                                                            <div class="timeline-list-item">
+                                                                <div class="d-flex">
+                                                                    <div class="flex-grow-1 overflow-hidden me-4">
+                                                                        <h5 class="font-size-14 mb-1"><?= $mantenimiento['placa']; ?></h5>
+                                                                        <p class="text-truncate text-muted font-size-13"><?= $mantenimiento['proximo_mantenimiento']; ?></p>
+                                                                    </div>
+                                                                    <div class="flex-shrink-0 text-end me-3">
+                                                                        <h6 class="mb-1">Vehículo: <?= $mantenimiento['marca'] . " " . $mantenimiento['modelo']; ?></h6>
+                                                                        <div class="font-size-13">Año: <?= $mantenimiento['anio']; ?></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div> 
+                                                        </li>
+                                                        <?php
+                                                    }
+                                                } else {
+                                                    ?>
+                                                    <li class="activity-list activity-border">
+                                                        <div class="activity-icon avatar-md">
+                                                            <span class="avatar-title bg-soft-primary text-primary rounded-circle">
+                                                                <i class="bx bx-wrench font-size-24"></i>
+                                                            </span>
+                                                        </div>
+                                                        <div class="timeline-list-item">
+                                                            <div class="d-flex">
+                                                                <div class="flex-grow-1 overflow-hidden me-4">
+                                                                    <h5 class="font-size-14 mb-1">No hay mantenimientos próximos</h5>
+                                                                </div>
+                                                            </div>
+                                                        </div> 
+                                                    </li>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </ul>
+                                        </div>    
+                                    </div>
+                                    <!-- end card body -->
                                 </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">¡IMPORTANTE! </h5>
-                                    <p class="card-text">Usted únicamente tiene acceso a la información que ha sido específicamente asignada por el equipo de administración del sistema. Es fundamental que toda la información presentada se maneje con el más alto nivel de confidencialidad y responsabilidad. La divulgación de cualquier dato no autorizado puede comprometer la seguridad del sistema y la integridad de los procesos internos. Por ello, se recalca la importancia de no compartir, transferir o difundir la información a terceros, ni dentro ni fuera de la organización, salvo con la debida autorización. La adecuada gestión y resguardo de los datos asegura la confiabilidad del sistema y el cumplimiento de las normativas vigentes en materia de protección de la información..</p>
-                                    
+                                <!-- end card -->
                             </div>
                         </div>
 
