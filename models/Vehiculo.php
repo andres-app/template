@@ -32,7 +32,7 @@ class Vehiculo extends Conectar {
 
     /**
      * Método para insertar un nuevo vehículo en la base de datos.
-     *
+     * @param int $id Identificador del vehículo.
      * @param string $placa Placa del vehículo.
      * @param string $marca Marca del vehículo.
      * @param string $modelo Modelo del vehículo.
@@ -72,6 +72,40 @@ class Vehiculo extends Conectar {
             return false;
         }
     }
+
+    public function editar_vehiculo($id, $placa, $marca, $modelo, $anio, $color, $motor, $combustible, $tipo_vehiculo, $ultimo_mantenimiento, $proximo_mantenimiento, $poliza, $estado) {
+        $conectar = parent::conexion();
+        parent::set_names();
+    
+        // Consulta SQL para actualizar un vehículo
+        $sql = "UPDATE vehiculos 
+                SET placa = ?, marca = ?, modelo = ?, anio = ?, color = ?, motor = ?, combustible = ?, tipo_vehiculo = ?, ultimo_mantenimiento = ?, proximo_mantenimiento = ?, poliza = ?, estado = ?
+                WHERE id = ?";
+    
+        // Preparar la consulta
+        $stmt = $conectar->prepare($sql);
+    
+        try {
+            // Ejecutar la consulta y actualizar el registro
+            $stmt->execute([$placa, $marca, $modelo, $anio, $color, $motor, $combustible, $tipo_vehiculo, $ultimo_mantenimiento, $proximo_mantenimiento, $poliza, $estado, $id]);
+            return true;  // Si la consulta fue exitosa
+        } catch (PDOException $e) {
+            error_log("Error en la consulta de actualización: " . $e->getMessage());
+            return false;  // Si hubo un error
+        }
+    }
+
+    public function get_vehiculo_por_id($id) {
+        $conectar = parent::conexion();
+        parent::set_names();
+    
+        $sql = "SELECT * FROM vehiculos WHERE id = ?";
+        $stmt = $conectar->prepare($sql);
+        $stmt->execute([$id]);
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC); // Retorna los datos del vehículo
+    }
+    
     
 }
 ?>

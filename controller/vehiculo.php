@@ -87,14 +87,48 @@ switch ($_GET["op"]) {
         }
         break;
 
-    // Otros casos (mostrar, eliminar) se pueden implementar aquí
-    case "mostrar":
-        // Código para mostrar un vehículo (pendiente de implementar)
+    // Caso para editar un vehículo existente
+    case "editar":
+        // Capturar los datos enviados por el formulario
+        $id = $_POST["vehiculo_id"];
+        $placa = $_POST["vehiculo_placa"];
+        $marca = $_POST["vehiculo_marca"];
+        $modelo = $_POST["vehiculo_modelo"];
+        $anio = $_POST["vehiculo_anio"];
+        $color = $_POST["vehiculo_color"];
+        $motor = $_POST["vehiculo_motor"];
+        $combustible = $_POST["vehiculo_combustible"];
+        $tipo_vehiculo = $_POST["vehiculo_tipo"];
+        $ultimo_mantenimiento = $_POST["vehiculo_ultimo_mantenimiento"];
+        $proximo_mantenimiento = $_POST["vehiculo_proximo_mantenimiento"];
+        $poliza = $_POST["vehiculo_poliza"];
+        $estado = $_POST["vehiculo_estado"];
+
+        // Llamar al método editar_vehiculo del modelo
+        if ($vehiculo->editar_vehiculo($id, $placa, $marca, $modelo, $anio, $color, $motor, $combustible, $tipo_vehiculo, $ultimo_mantenimiento, $proximo_mantenimiento, $poliza, $estado)) {
+            echo json_encode(["success" => "Vehículo actualizado correctamente."]);
+        } else {
+            echo json_encode(["error" => "Error al actualizar el vehículo."]);
+        }
         break;
 
-    case "eliminar":
-        // Código para eliminar un vehículo (pendiente de implementar)
-        break;
+        case "mostrar":
+            // Verificar si el ID del vehículo fue recibido
+            if (isset($_POST["vehiculo_id"])) {
+                // Obtener los datos del vehículo por su ID
+                $datos = $vehiculo->get_vehiculo_por_id($_POST["vehiculo_id"]);
+                
+                // Verificar si los datos fueron encontrados
+                if ($datos) {
+                    echo json_encode($datos); // Enviar los datos como JSON al frontend
+                } else {
+                    echo json_encode(["error" => "No se encontraron datos para el ID del vehículo."]);
+                }
+            } else {
+                echo json_encode(["error" => "No se proporcionó un ID de vehículo válido."]);
+            }
+            break;        
+        
 
     // Caso por defecto si la operación no es válida
     default:

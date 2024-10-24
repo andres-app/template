@@ -22,17 +22,20 @@ function guardaryeditar(e) {
     e.preventDefault(); // Evitar el comportamiento por defecto del formulario
 
     var formData = new FormData($("#mnt_form")[0]); // Crear un objeto FormData con los datos del formulario
+    
+    // Verificar si es una edición (si vehiculo_id tiene un valor)
+    var url = $("#vehiculo_id").val() ? "../../controller/vehiculo.php?op=editar" : "../../controller/vehiculo.php?op=insertar";
 
     // Enviar los datos mediante AJAX
     $.ajax({
-        url: "../../controller/vehiculo.php?op=insertar", // URL del controlador para insertar el vehículo
-        type: "POST", // Método de envío de datos
+        url: url, // Cambia la URL según si es insertar o editar
+        type: "POST",
         data: formData, // Datos del formulario
         contentType: false, // No establecer ningún tipo de contenido para los datos
         processData: false, // No procesar los datos automáticamente (para permitir el uso de FormData)
         success: function(datos) {
             // Mostrar un mensaje de éxito usando SweetAlert
-            Swal.fire('Registro', 'Vehículo registrado correctamente', 'success');
+            Swal.fire('Registro', 'Vehículo guardado correctamente', 'success');
             // Recargar el DataTable para mostrar el nuevo registro
             tabla.ajax.reload();
             // Cerrar el modal de registro
@@ -40,10 +43,45 @@ function guardaryeditar(e) {
         },
         error: function(e) {
             // Mostrar un mensaje de error en caso de que falle la inserción
-            Swal.fire('Error', 'No se pudo registrar el vehículo', 'error');
+            Swal.fire('Error', 'No se pudo guardar el vehículo', 'error');
         }
     });
 }
+
+function editar(id) {
+    // Hacer la petición AJAX para obtener los datos del vehículo
+    $.post("../../controller/vehiculo.php?op=mostrar", { vehiculo_id: id }, function(data) {
+        data = JSON.parse(data); // Convertir los datos recibidos a formato JSON
+        
+        // Verificar si se recibieron los datos correctamente
+        if(data.error) {
+            Swal.fire('Error', data.error, 'error');
+        } else {
+            // Llenar los campos del formulario con los datos recibidos
+            $("#vehiculo_id").val(data.id);
+            $("#vehiculo_placa").val(data.placa);
+            $("#vehiculo_marca").val(data.marca);
+            $("#vehiculo_modelo").val(data.modelo);
+            $("#vehiculo_anio").val(data.anio);
+            $("#vehiculo_color").val(data.color);
+            $("#vehiculo_motor").val(data.motor);
+            $("#vehiculo_combustible").val(data.combustible);
+            $("#vehiculo_tipo").val(data.tipo_vehiculo);
+            $("#vehiculo_ultimo_mantenimiento").val(data.ultimo_mantenimiento);
+            $("#vehiculo_proximo_mantenimiento").val(data.proximo_mantenimiento);
+            $("#vehiculo_poliza").val(data.poliza);
+            $("#vehiculo_estado").val(data.estado);
+
+            // Cambiar el título del modal a "Editar"
+            $("#myModalLabel").html("Editar Vehículo");
+
+            // Mostrar el modal con los datos cargados
+            $("#mnt_modal").modal("show");
+        }
+    });
+}
+
+
 
 /**
  * Configuración del DataTable para listar los vehículos registrados.
