@@ -110,6 +110,54 @@ function eliminar(id) {
     });
 }
 
+function previsualizar(id) {
+    // Hacer la petición AJAX para obtener los datos del vehículo
+    $.post("../../controller/vehiculo.php?op=mostrar", { vehiculo_id: id }, function(data) {
+        data = JSON.parse(data); // Convertir los datos recibidos a formato JSON
+        
+        // Verificar si se recibieron los datos correctamente
+        if(data.error) {
+            Swal.fire('Error', data.error, 'error');
+        } else {
+            // Llenar los campos del formulario con los datos recibidos
+            $("#vehiculo_id").val(data.id);
+            $("#vehiculo_placa").val(data.placa).prop("disabled", true);
+            $("#vehiculo_marca").val(data.marca).prop("disabled", true);
+            $("#vehiculo_modelo").val(data.modelo).prop("disabled", true);
+            $("#vehiculo_anio").val(data.anio).prop("disabled", true);
+            $("#vehiculo_color").val(data.color).prop("disabled", true);
+            $("#vehiculo_motor").val(data.motor).prop("disabled", true);
+            $("#vehiculo_combustible").val(data.combustible).prop("disabled", true);
+            $("#vehiculo_tipo").val(data.tipo_vehiculo).prop("disabled", true);
+            $("#vehiculo_ultimo_mantenimiento").val(data.ultimo_mantenimiento).prop("disabled", true);
+            $("#vehiculo_proximo_mantenimiento").val(data.proximo_mantenimiento).prop("disabled", true);
+            $("#vehiculo_poliza").val(data.poliza).prop("disabled", true);
+            $("#vehiculo_estado").val(data.estado).prop("disabled", true);
+
+            // Cambiar el título del modal a "Previsualización"
+            $("#myModalLabel").html("Previsualización del Vehículo");
+
+            // Deshabilitar el botón de guardar
+            $(".modal-footer .btn-primary").hide();  // Ocultar el botón de guardar
+
+            // Mostrar el modal con los datos cargados
+            $("#mnt_modal").modal("show");
+        }
+    });
+}
+
+// Evento para restaurar el formulario cuando se cierra el modal
+$("#mnt_modal").on("hidden.bs.modal", function () {
+    // Habilitar todos los campos del formulario
+    $("#mnt_form input, #mnt_form select").prop("disabled", false);
+
+    // Mostrar el botón de guardar nuevamente
+    $(".modal-footer .btn-primary").show();
+
+    // Cambiar el título del modal a "Nuevo Registro"
+    $("#myModalLabel").html("Nuevo Registro");
+});
+
 
 
 /**

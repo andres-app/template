@@ -37,12 +37,16 @@ switch ($_GET["op"]) {
 
             // Botones de acción (editar y eliminar) para cada fila
             $sub_array[] = '
-                <button type="button" class="btn btn-soft-warning waves-effect waves-light btn-sm" onClick="editar(' . $row["id"] . ')">
-                    <i class="bx bx-edit-alt font-size-16 align-middle"></i>
-                </button>
-                <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onClick="eliminar(' . $row["id"] . ')">
-                    <i class="bx bx-trash-alt font-size-16 align-middle"></i>
-                </button>';
+            <button type="button" class="btn btn-soft-info waves-effect waves-light btn-sm" onClick="previsualizar(' . $row["id"] . ')">
+                <i class="bx bx-show-alt font-size-16 align-middle"></i>
+            </button>
+            <button type="button" class="btn btn-soft-warning waves-effect waves-light btn-sm" onClick="editar(' . $row["id"] . ')">
+                <i class="bx bx-edit-alt font-size-16 align-middle"></i>
+            </button>
+            <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onClick="eliminar(' . $row["id"] . ')">
+                <i class="bx bx-trash-alt font-size-16 align-middle"></i>
+            </button>';
+        
 
             // Agregar la fila formateada al array de datos
             $data[] = $sub_array;
