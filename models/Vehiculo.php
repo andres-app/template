@@ -20,7 +20,7 @@ class Vehiculo extends Conectar {
     
         // Ordenar los vehículos por 'id' de forma descendente para que el último registro aparezca primero
         $sql = "SELECT id, placa, marca, modelo, anio, color, motor, combustible, tipo_vehiculo, ultimo_mantenimiento, proximo_mantenimiento, poliza, estado 
-                FROM vehiculos";
+                FROM vehiculos WHERE estado =1";
     
         $stmt = $conectar->prepare($sql);
         $stmt->execute();
