@@ -112,23 +112,39 @@ switch ($_GET["op"]) {
         }
         break;
 
-        case "mostrar":
-            // Verificar si el ID del vehículo fue recibido
-            if (isset($_POST["vehiculo_id"])) {
-                // Obtener los datos del vehículo por su ID
-                $datos = $vehiculo->get_vehiculo_por_id($_POST["vehiculo_id"]);
-                
-                // Verificar si los datos fueron encontrados
-                if ($datos) {
-                    echo json_encode($datos); // Enviar los datos como JSON al frontend
-                } else {
-                    echo json_encode(["error" => "No se encontraron datos para el ID del vehículo."]);
-                }
+    case "mostrar":
+        // Verificar si el ID del vehículo fue recibido
+        if (isset($_POST["vehiculo_id"])) {
+            // Obtener los datos del vehículo por su ID
+            $datos = $vehiculo->get_vehiculo_por_id($_POST["vehiculo_id"]);
+
+            // Verificar si los datos fueron encontrados
+            if ($datos) {
+                echo json_encode($datos); // Enviar los datos como JSON al frontend
             } else {
-                echo json_encode(["error" => "No se proporcionó un ID de vehículo válido."]);
+                echo json_encode(["error" => "No se encontraron datos para el ID del vehículo."]);
             }
-            break;        
-        
+        } else {
+            echo json_encode(["error" => "No se proporcionó un ID de vehículo válido."]);
+        }
+        break;
+
+    case "eliminar":
+        if (isset($_POST["vehiculo_id"])) {
+            $id = $_POST["vehiculo_id"];
+
+            // Cambiar el estado del vehículo a 0 (Inactivo) en lugar de eliminarlo físicamente
+            if ($vehiculo->cambiar_estado($id, 0)) {
+                echo json_encode(["success" => "Vehículo eliminado correctamente."]);
+            } else {
+                echo json_encode(["error" => "Error al eliminar el vehículo."]);
+            }
+        } else {
+            echo json_encode(["error" => "No se proporcionó un ID de vehículo válido."]);
+        }
+        break;
+
+
 
     // Caso por defecto si la operación no es válida
     default:

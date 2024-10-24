@@ -81,6 +81,35 @@ function editar(id) {
     });
 }
 
+function eliminar(id) {
+    // Confirmación de eliminación con SweetAlert
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Este vehículo se eliminara definitivamente",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Hacer la petición AJAX para eliminar el vehículo
+            $.post("../../controller/vehiculo.php?op=eliminar", { vehiculo_id: id }, function(data) {
+                data = JSON.parse(data); // Convertir los datos a formato JSON
+                
+                // Verificar si la operación fue exitosa
+                if (data.success) {
+                    Swal.fire('Eliminado', data.success, 'success');
+                    tabla.ajax.reload(); // Recargar el DataTable para reflejar los cambios
+                } else {
+                    Swal.fire('Error', data.error, 'error');
+                }
+            });
+        }
+    });
+}
+
 
 
 /**
