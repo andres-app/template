@@ -77,6 +77,14 @@ $(document).ready(function() {
         "bInfo": true,           // Muestra información sobre el DataTable (cantidad de registros, etc.)
         "iDisplayLength": 10,    // Define el número de registros a mostrar por página
         "autoWidth": false,      // Desactiva el ajuste automático del ancho de las columnas
+        "order": [[ 0, "desc" ]],  // Ordena por la primera columna (ID) en forma descendente
+        "columnDefs": [
+            { 
+                "targets": [0],  // Especifica que la primera columna (ID) se ocultará
+                "visible": false,  // Hace la columna ID invisible
+                "searchable": false // Impide que la columna ID sea parte de la búsqueda
+            }
+        ],
 
         // Configuraciones de idioma para traducir los textos a español
         "language": {
@@ -102,6 +110,7 @@ $(document).ready(function() {
         }
     });
 });
+
 
 /**
  * Evento para mostrar el modal cuando se hace clic en el botón "Nuevo Registro".

@@ -27,6 +27,7 @@ switch ($_GET["op"]) {
         // Recorrer los datos obtenidos y formatearlos para el DataTable
         foreach ($datos as $row) {
             $sub_array = array();
+            $sub_array[] = $row["id"]; // ID del vehículo
             $sub_array[] = $row["placa"]; // Placa del vehículo
             $sub_array[] = $row["marca"]; // Marca del vehículo
             $sub_array[] = $row["modelo"]; // Modelo del vehículo

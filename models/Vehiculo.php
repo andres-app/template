@@ -15,23 +15,20 @@ class Vehiculo extends Conectar {
      *               - proximo_mantenimiento: Fecha prevista para el próximo mantenimiento.
      */
     public function get_vehiculos() {
-        // Establecer la conexión con la base de datos
         $conectar = parent::conexion();
         parent::set_names();
-
-        // Consulta SQL para obtener los datos de los vehículos
-        $sql = "SELECT id, placa, marca, modelo, anio, ultimo_mantenimiento, proximo_mantenimiento 
+    
+        // Ordenar los vehículos por 'id' de forma descendente para que el último registro aparezca primero
+        $sql = "SELECT id, placa, marca, modelo, anio, color, motor, combustible, tipo_vehiculo, ultimo_mantenimiento, proximo_mantenimiento, poliza, estado 
                 FROM vehiculos";
-
-        // Preparar la consulta
+    
         $stmt = $conectar->prepare($sql);
-
-        // Ejecutar la consulta
         $stmt->execute();
-
-        // Retornar los resultados en formato de array asociativo
+    
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    
 
     /**
      * Método para insertar un nuevo vehículo en la base de datos.

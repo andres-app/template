@@ -73,6 +73,7 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
                                         <table id="listado_table" class="table table-bordered dt-responsive nowrap w-100">
                                             <thead>
                                                 <tr>
+                                                    <th>ID</th>
                                                     <th>Placa</th>
                                                     <th>Marca</th>
                                                     <th>Modelo</th>
