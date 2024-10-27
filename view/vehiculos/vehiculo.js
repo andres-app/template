@@ -48,13 +48,19 @@ function guardaryeditar(e) {
     });
 }
 
+/**
+ * Función para editar un vehículo.
+ * Se cargan los datos en el formulario para su edición.
+ *
+ * @param {int} id - ID del vehículo que se va a editar.
+ */
 function editar(id) {
     // Hacer la petición AJAX para obtener los datos del vehículo
     $.post("../../controller/vehiculo.php?op=mostrar", { vehiculo_id: id }, function(data) {
         data = JSON.parse(data); // Convertir los datos recibidos a formato JSON
         
         // Verificar si se recibieron los datos correctamente
-        if(data.error) {
+        if (data.error) {
             Swal.fire('Error', data.error, 'error');
         } else {
             // Llenar los campos del formulario con los datos recibidos
@@ -68,7 +74,7 @@ function editar(id) {
             $("#vehiculo_combustible").val(data.combustible);
             $("#vehiculo_tipo").val(data.tipo_vehiculo);
             $("#vehiculo_ultimo_mantenimiento").val(data.ultimo_mantenimiento);
-            $("#vehiculo_proximo_mantenimiento").val(data.proximo_mantenimiento);
+            $("#vehiculo_proximo_mantenimiento").val(data.fecha_proximo_mantenimiento);  // Cambiado a `fecha_proximo_mantenimiento`
             $("#vehiculo_poliza").val(data.poliza);
             $("#vehiculo_estado").val(data.estado);
 
@@ -81,11 +87,17 @@ function editar(id) {
     });
 }
 
+/**
+ * Función para eliminar un vehículo.
+ * Solicita confirmación antes de proceder.
+ *
+ * @param {int} id - ID del vehículo que se va a eliminar.
+ */
 function eliminar(id) {
     // Confirmación de eliminación con SweetAlert
     Swal.fire({
         title: '¿Estás seguro?',
-        text: "Este vehículo se eliminara definitivamente",
+        text: "Este vehículo se eliminará permanentemente",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -110,13 +122,19 @@ function eliminar(id) {
     });
 }
 
+/**
+ * Función para previsualizar un vehículo.
+ * Desactiva los campos del formulario para evitar su edición.
+ *
+ * @param {int} id - ID del vehículo a previsualizar.
+ */
 function previsualizar(id) {
     // Hacer la petición AJAX para obtener los datos del vehículo
     $.post("../../controller/vehiculo.php?op=mostrar", { vehiculo_id: id }, function(data) {
         data = JSON.parse(data); // Convertir los datos recibidos a formato JSON
         
         // Verificar si se recibieron los datos correctamente
-        if(data.error) {
+        if (data.error) {
             Swal.fire('Error', data.error, 'error');
         } else {
             // Llenar los campos del formulario con los datos recibidos
@@ -130,7 +148,7 @@ function previsualizar(id) {
             $("#vehiculo_combustible").val(data.combustible).prop("disabled", true);
             $("#vehiculo_tipo").val(data.tipo_vehiculo).prop("disabled", true);
             $("#vehiculo_ultimo_mantenimiento").val(data.ultimo_mantenimiento).prop("disabled", true);
-            $("#vehiculo_proximo_mantenimiento").val(data.proximo_mantenimiento).prop("disabled", true);
+            $("#vehiculo_proximo_mantenimiento").val(data.fecha_proximo_mantenimiento).prop("disabled", true);  // Cambiado a `fecha_proximo_mantenimiento`
             $("#vehiculo_poliza").val(data.poliza).prop("disabled", true);
             $("#vehiculo_estado").val(data.estado).prop("disabled", true);
 
@@ -146,7 +164,10 @@ function previsualizar(id) {
     });
 }
 
-// Evento para restaurar el formulario cuando se cierra el modal
+/**
+ * Restaurar el formulario cuando se cierra el modal.
+ * Se habilitan todos los campos y se muestra el botón de guardar.
+ */
 $("#mnt_modal").on("hidden.bs.modal", function () {
     // Habilitar todos los campos del formulario
     $("#mnt_form input, #mnt_form select").prop("disabled", false);

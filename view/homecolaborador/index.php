@@ -80,7 +80,7 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
                                                                 <div class="d-flex">
                                                                     <div class="flex-grow-1 overflow-hidden me-4">
                                                                         <h5 class="font-size-14 mb-1"><?= $mantenimiento['placa']; ?></h5>
-                                                                        <p class="text-truncate text-muted font-size-13"><?= $mantenimiento['proximo_mantenimiento']; ?></p>
+                                                                        <p class="text-truncate text-muted font-size-13"><?= $mantenimiento['fecha_proximo_mantenimiento']; ?></p>
                                                                     </div>
                                                                     <div class="flex-shrink-0 text-end me-3">
                                                                         <h6 class="mb-1">Vehículo: <?= $mantenimiento['marca'] . " " . $mantenimiento['modelo']; ?></h6>

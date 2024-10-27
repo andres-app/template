@@ -46,7 +46,7 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
                                     <div class="page-title-right">
                                         <ol class="breadcrumb m-0">
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                                            <li class="breadcrumb-item active">Mantenimiento de Vehículos</li>
+                                            <li class="breadcrumb-item active">Lista de Vehículos</li>
                                         </ol>
                                     </div>
                                 </div>

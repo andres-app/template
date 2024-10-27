@@ -1,5 +1,4 @@
 <?php
-// Incluir los archivos necesarios para la conexión a la base de datos y el modelo Vehiculo
 require_once("../config/conexion.php");
 require_once("../models/Vehiculo.php");
 
@@ -16,7 +15,6 @@ switch ($_GET["op"]) {
 
         // Verificar si hubo algún error al obtener los datos
         if ($datos === false) {
-            // Enviar un mensaje de error en formato JSON
             echo json_encode(["error" => "Error al obtener los vehículos"]);
             exit;
         }
@@ -32,8 +30,8 @@ switch ($_GET["op"]) {
             $sub_array[] = $row["marca"]; // Marca del vehículo
             $sub_array[] = $row["modelo"]; // Modelo del vehículo
             $sub_array[] = $row["anio"]; // Año del vehículo
-            $sub_array[] = $row["ultimo_mantenimiento"]; // Fecha del último mantenimiento
-            $sub_array[] = $row["proximo_mantenimiento"]; // Fecha del próximo mantenimiento
+            $sub_array[] = isset($row["fecha_mantenimiento"]) ? $row["fecha_mantenimiento"] : "No realizado"; // Fecha del último mantenimiento
+            $sub_array[] = isset($row["fecha_proximo_mantenimiento"]) ? $row["fecha_proximo_mantenimiento"] : "No programado"; // Fecha del próximo mantenimiento
 
             // Botones de acción (editar y eliminar) para cada fila
             $sub_array[] = '
@@ -46,7 +44,6 @@ switch ($_GET["op"]) {
             <button type="button" class="btn btn-soft-danger waves-effect waves-light btn-sm" onClick="eliminar(' . $row["id"] . ')">
                 <i class="bx bx-trash-alt font-size-16 align-middle"></i>
             </button>';
-        
 
             // Agregar la fila formateada al array de datos
             $data[] = $sub_array;
@@ -54,10 +51,10 @@ switch ($_GET["op"]) {
 
         // Preparar los resultados en el formato esperado por el DataTable
         $results = array(
-            "sEcho" => 1, // Eco de la respuesta para compatibilidad con DataTable
-            "iTotalRecords" => count($data), // Total de registros sin filtrar
-            "iTotalDisplayRecords" => count($data), // Total de registros filtrados
-            "aaData" => $data // Los datos que se mostrarán en la tabla
+            "sEcho" => 1,
+            "iTotalRecords" => count($data),
+            "iTotalDisplayRecords" => count($data),
+            "aaData" => $data
         );
 
         // Enviar los resultados como JSON
@@ -76,17 +73,13 @@ switch ($_GET["op"]) {
         $motor = isset($_POST["vehiculo_motor"]) ? $_POST["vehiculo_motor"] : null;
         $combustible = isset($_POST["vehiculo_combustible"]) ? $_POST["vehiculo_combustible"] : null;
         $tipo = isset($_POST["vehiculo_tipo"]) ? $_POST["vehiculo_tipo"] : null;
-        $ultimo_mantenimiento = isset($_POST["vehiculo_ultimo_mantenimiento"]) ? $_POST["vehiculo_ultimo_mantenimiento"] : null;
-        $proximo_mantenimiento = isset($_POST["vehiculo_proximo_mantenimiento"]) ? $_POST["vehiculo_proximo_mantenimiento"] : null;
         $poliza = isset($_POST["vehiculo_poliza"]) ? $_POST["vehiculo_poliza"] : null;
         $estado = isset($_POST["vehiculo_estado"]) ? $_POST["vehiculo_estado"] : null;
 
         // Insertar el nuevo vehículo en la base de datos usando el modelo
-        if ($vehiculo->insertar_vehiculo($placa, $marca, $modelo, $anio, $color, $motor, $combustible, $tipo, $ultimo_mantenimiento, $proximo_mantenimiento, $poliza, $estado)) {
-            // Enviar un mensaje de éxito si la inserción fue correcta
+        if ($vehiculo->insertar_vehiculo($placa, $marca, $modelo, $anio, $color, $motor, $combustible, $tipo, $poliza, $estado)) {
             echo json_encode(["success" => "Vehículo registrado correctamente."]);
         } else {
-            // Enviar un mensaje de error si la inserción falló
             echo json_encode(["error" => "Error al registrar el vehículo."]);
         }
         break;
@@ -103,13 +96,11 @@ switch ($_GET["op"]) {
         $motor = $_POST["vehiculo_motor"];
         $combustible = $_POST["vehiculo_combustible"];
         $tipo_vehiculo = $_POST["vehiculo_tipo"];
-        $ultimo_mantenimiento = $_POST["vehiculo_ultimo_mantenimiento"];
-        $proximo_mantenimiento = $_POST["vehiculo_proximo_mantenimiento"];
         $poliza = $_POST["vehiculo_poliza"];
         $estado = $_POST["vehiculo_estado"];
 
         // Llamar al método editar_vehiculo del modelo
-        if ($vehiculo->editar_vehiculo($id, $placa, $marca, $modelo, $anio, $color, $motor, $combustible, $tipo_vehiculo, $ultimo_mantenimiento, $proximo_mantenimiento, $poliza, $estado)) {
+        if ($vehiculo->editar_vehiculo($id, $placa, $marca, $modelo, $anio, $color, $motor, $combustible, $tipo_vehiculo, $poliza, $estado)) {
             echo json_encode(["success" => "Vehículo actualizado correctamente."]);
         } else {
             echo json_encode(["error" => "Error al actualizar el vehículo."]);
@@ -117,14 +108,10 @@ switch ($_GET["op"]) {
         break;
 
     case "mostrar":
-        // Verificar si el ID del vehículo fue recibido
         if (isset($_POST["vehiculo_id"])) {
-            // Obtener los datos del vehículo por su ID
             $datos = $vehiculo->get_vehiculo_por_id($_POST["vehiculo_id"]);
-
-            // Verificar si los datos fueron encontrados
             if ($datos) {
-                echo json_encode($datos); // Enviar los datos como JSON al frontend
+                echo json_encode($datos);
             } else {
                 echo json_encode(["error" => "No se encontraron datos para el ID del vehículo."]);
             }
@@ -136,8 +123,6 @@ switch ($_GET["op"]) {
     case "eliminar":
         if (isset($_POST["vehiculo_id"])) {
             $id = $_POST["vehiculo_id"];
-
-            // Cambiar el estado del vehículo a 0 (Inactivo) en lugar de eliminarlo físicamente
             if ($vehiculo->cambiar_estado($id, 0)) {
                 echo json_encode(["success" => "Vehículo eliminado correctamente."]);
             } else {
@@ -148,9 +133,6 @@ switch ($_GET["op"]) {
         }
         break;
 
-
-
-    // Caso por defecto si la operación no es válida
     default:
         echo json_encode(["error" => "Operación no válida."]);
         break;

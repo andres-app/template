@@ -66,23 +66,15 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="vehiculo_tipo" class="form-label">Tipo de Vehículo</label>
-                            <input class="form-control" type="text" name="vehiculo_tipo" id="vehiculo_tipo">
+                            <select class="form-control" name="vehiculo_tipo" id="vehiculo_tipo">
+                            <option value="Camioneta">Camioneta</option>
+                                <option value="Sedán">Sedán</option>
+                                <option value="Hatchback">Hatchback</option>
+                            </select>
                         </div>
                     </div>
 
-                    <!-- Fila 5: Fechas de mantenimiento del vehículo -->
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="vehiculo_ultimo_mantenimiento" class="form-label">Último Mantenimiento</label>
-                            <input class="form-control" type="date" name="vehiculo_ultimo_mantenimiento" id="vehiculo_ultimo_mantenimiento">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="vehiculo_proximo_mantenimiento" class="form-label">Próximo Mantenimiento</label>
-                            <input class="form-control" type="date" name="vehiculo_proximo_mantenimiento" id="vehiculo_proximo_mantenimiento">
-                        </div>
-                    </div>
-
-                    <!-- Fila 6: Póliza del vehículo y estado (activo/inactivo) -->
+                    <!-- Fila 5: Póliza del vehículo y estado (activo/inactivo) -->
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="vehiculo_poliza" class="form-label">Póliza</label>
