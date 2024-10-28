@@ -40,7 +40,7 @@ $datos = $rol->get_menu_x_rol($_SESSION["rol_id"]);
                     <li>
                         <a href="javascript: void(0);" class="has-arrow">
                             <i data-feather="settings"></i>
-                            <span data-key="t-mantenimiento">Mantenimiento</span>
+                            <span data-key="t-mantenimiento">Ajustes</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <?php
