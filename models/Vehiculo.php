@@ -36,7 +36,15 @@ class Vehiculo extends Conectar
     
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
+    public function get_total_vehiculos() {
+        $conectar = parent::conexion();
+        $sql = "SELECT COUNT(*) as total FROM vehiculos"; // Cambia 'vehiculos' por el nombre correcto de tu tabla
+        $sql = $conectar->prepare($sql);
+        $sql->execute();
+        $result = $sql->fetch(PDO::FETCH_ASSOC);
+        return $result['total']; // Retorna solo el valor total
+    }    
     
     /**
      * Método para insertar un nuevo vehículo en la base de datos.

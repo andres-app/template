@@ -11,6 +11,7 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
     $vehiculo = new Vehiculo();
     
     // Obtener vehículos con próximos mantenimientos
+    $total_vehiculos = $vehiculo->get_total_vehiculos();
     $proximos_mantenimientos = $vehiculo->get_proximos_mantenimientos();
     ?>
     <!doctype html>
@@ -42,20 +43,22 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Tarjeta informativa -->
-                        <div class="card border border-primary">
-                            <div class="card-header bg-transparent border-primary">
-                                <h5 class="my-0 text-primary"><i class="mdi mdi-bullseye-arrow me-3"></i>Estimado colaborador</h5>
+                
+                        <div class="row">
+                    <!-- Card para el total de vehículos -->
+                    <div class="col-xl-3">
+                        <div class="card text-center">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="my-0 text-white">
+                                    <i class="mdi mdi-car-multiple me-2 text-white"></i>Total de Vehículos
+                                </h5>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title">¡IMPORTANTE!</h5>
-                                <p class="card-text">Usted únicamente tiene acceso a la información que ha sido específicamente asignada... 
-                                <!-- Continúa el texto que tenías antes -->
-                                </p>
+                                <h3 class="card-title"><?= $total_vehiculos; ?></h3>
                             </div>
                         </div>
-
+                    </div>
+                    </div>
                         <!-- Tarjeta para mostrar los próximos mantenimientos -->
                         <div class="row">
                             <div class="col-xl-4">

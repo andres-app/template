@@ -2,8 +2,14 @@
 require_once("../config/conexion.php");
 require_once("../models/Vehiculo.php");
 
-// Crear una instancia del modelo Vehiculo
+// Crear instancia del modelo Vehículo
 $vehiculo = new Vehiculo();
+$total_vehiculos = $vehiculo->get_total_vehiculos(); // Obtenemos el total de vehículos
+
+
+// Obtener vehículos con próximos mantenimientos
+$proximos_mantenimientos = $vehiculo->get_proximos_mantenimientos();
+
 
 // Evaluar el valor del parámetro "op" para determinar qué operación realizar
 switch ($_GET["op"]) {
