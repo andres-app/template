@@ -11,13 +11,14 @@
         protected function conexion(){
             try{
                 /* TODO: Detectar entorno */
-                if ($_SERVER['HTTP_HOST'] == 'localhost') {
-                    /* Configuración para el entorno de desarrollo (localhost) */
-                    $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=flota","root","");
+                if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
+                    // Configuración para el entorno de desarrollo
+                    $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=flota", "root", "");
                 } else {
-                    /* Configuración para el entorno de producción */
-                    $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=iespplamas_template","iespplamas_template","Dig3s3w3b$$$");
+                    // Configuración para el entorno de producción
+                    $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=iespplamas_template", "iespplamas_template", "Dig3s3w3b$$$");
                 }
+                
                 
                 return $conectar;
             } catch(Exception $e) {
