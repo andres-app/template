@@ -16,7 +16,7 @@
                     $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=flota", "root", "");
                 } else {
                     // Configuración para el entorno de producción
-                    $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=iespplamas_template", "iespplamas_template", "Dig3s3w3b$$$");
+                    $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=u274409976_template", "u274409976_template", "Dev2804751$$$");
                 }
                 
                 
@@ -40,7 +40,7 @@
                 return "http://localhost/flota/";
             } else {
                 /* Ruta para el entorno de producción */
-                return "https://web.TEMPLATEseho.edu.pe/";
+                return "https://template.legrand.pe/";
             }
         }
     }

@@ -38,7 +38,7 @@
                                 <div class="d-flex flex-column h-100">
                                     <div class="mb-4 mb-md-5 text-center">
                                         <a href="index-1.html" class="d-block auth-logo">
-                                            <img src="../../assets/picture/logo-sm-1.svg" alt="" height="28"> <span class="logo-txt">Sistema de Seguimiento de la TEMPLATE</span>
+                                            <img src="../../assets/picture/logo-sm-1.svg" alt="" height="28"> <span class="logo-txt">TEMPLATE</span>
                                         </a>
                                     </div>
                                     <div class="auth-content my-auto">
