@@ -46,6 +46,10 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
             $data_pendiente[] = (int) $row["pendiente"];
         }
 
+        // ====== REPORTE CONSOLIDADO POR ESPECIALIDAD ======
+        $resumen = $reporte->get_resumen_por_especialidad();
+
+
     }
     ?>
     <!doctype html>
@@ -98,8 +102,8 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <h4 class="mb-4 text-center fw-bold text-secondary">
-                            Análisis de Casos por Requerimiento
+                        <h4 class="mb-4  fw-bold text-secondary">
+                            Dashboard - Matriz General
                         </h4>
 
                         <!-- KPIs Superiores -->
@@ -159,6 +163,50 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
                             </div>
                         </div>
 
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card shadow-sm">
+                                    <div class="card-header text-center bg-light fw-semibold">
+                                        Resumen Consolidado por Especialidad
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered align-middle text-center">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Especialidad</th>
+                                                        <th>Total Requerimientos</th>
+                                                        <th>Total Casos de Prueba</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($resumen as $row): ?>
+                                                        <tr>
+                                                            <td><?= $row["especialidad"]; ?></td>
+                                                            <td><?= $row["total_requerimientos"]; ?></td>
+                                                            <td><?= $row["total_casos_prueba"]; ?></td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                                <tfoot class="fw-bold table-light">
+                                                    <tr>
+                                                        <td>Total General</td>
+                                                        <td>
+                                                            <?= array_sum(array_column($resumen, 'total_requerimientos')); ?>
+                                                        </td>
+                                                        <td>
+                                                            <?= array_sum(array_column($resumen, 'total_casos_prueba')); ?>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <!-- Gráficos secundarios -->
                         <div class="row mt-4 g-3">
                             <div class="col-md-6">
@@ -187,6 +235,8 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
                                 </div>
                             </div>
                         </div>
+
+
 
                         <!-- Tabla Detallada -->
                         <div class="row mt-4 g-3">

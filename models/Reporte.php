@@ -171,6 +171,30 @@ class Reporte extends Conectar
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /* ============================================================
+   REPORTE CONSOLIDADO POR ESPECIALIDAD
+   (Total de requerimientos y casos de prueba)
+============================================================ */
+    public function get_resumen_por_especialidad()
+    {
+        $conectar = parent::conexion();
+        parent::set_names();
+
+        $sql = "SELECT 
+                e.nombre AS especialidad,
+                COUNT(DISTINCT rq.id_requerimiento) AS total_requerimientos,
+                COUNT(DISTINCT cp.id_caso) AS total_casos_prueba
+            FROM especialidad e
+            LEFT JOIN caso_prueba cp ON e.id_especialidad = cp.especialidad_id AND cp.estado = 1
+            LEFT JOIN requerimiento rq ON rq.id_requerimiento = cp.id_requerimiento AND rq.estado = 1
+            GROUP BY e.nombre
+            ORDER BY e.nombre ASC";
+
+        $stmt = $conectar->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
 }
 ?>
