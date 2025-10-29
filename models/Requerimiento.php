@@ -129,5 +129,19 @@ class Requerimiento extends Conectar
             return false;
         }
     }
+
+    // ============================================================
+    // OBTENER TOTAL DE REQUERIMIENTOS ACTIVOS
+    // ============================================================
+    public function get_total_requerimientos()
+    {
+        $conectar = parent::conexion();
+        parent::set_names();
+
+        $sql = "SELECT COUNT(*) AS total FROM requerimiento WHERE estado = 1";
+        $stmt = $conectar->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
 ?>
