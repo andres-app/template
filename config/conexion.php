@@ -13,7 +13,7 @@
                 /* TODO: Detectar entorno */
                 if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
                     // Configuración para el entorno de desarrollo
-                    $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=flota", "root", "");
+                    $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=template", "root", "");
                 } else {
                     // Configuración para el entorno de producción
                     $conectar = $this->dbh = new PDO("mysql:host=localhost;dbname=u274409976_template", "u274409976_template", "Dev2804751$$$");
@@ -37,10 +37,10 @@
         public static function ruta(){
             if ($_SERVER['HTTP_HOST'] == 'localhost') {
                 /* Ruta para el entorno de desarrollo */
-                return "http://localhost/flota/";
+                return "http://localhost/template/";
             } else {
                 /* Ruta para el entorno de producción */
-                return "https://template.legrand.pe/";
+                return "";
             }
         }
     }

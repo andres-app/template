@@ -4,7 +4,7 @@ require_once("../models/Vehiculo.php");
 
 // Crear instancia del modelo Vehículo
 $vehiculo = new Vehiculo();
-$total_vehiculos = $vehiculo->get_total_vehiculos(); // Obtenemos el total de vehículos
+$total_activos = $vehiculo->get_total_activos(); // Obtenemos el total de vehículos
 
 
 // Obtener vehículos con próximos mantenimientos
@@ -17,7 +17,7 @@ switch ($_GET["op"]) {
     // Caso para listar todos los vehículos
     case "listar":
         // Obtener los datos de los vehículos desde el modelo
-        $datos = $vehiculo->get_vehiculos();
+        $datos = $vehiculo->get_activos();
 
         // Verificar si hubo algún error al obtener los datos
         if ($datos === false) {
