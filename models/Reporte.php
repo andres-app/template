@@ -124,6 +124,53 @@ class Reporte extends Conectar
         ];
     }
 
+    /* ============================================================
+    CASOS DE PRUEBA POR ÓRGANO JURISDICCIONAL (USANDO ESPECIALIDAD)
+ ============================================================ */
+    public function get_casos_por_organo_jurisdiccional()
+    {
+        $conectar = parent::conexion();
+        parent::set_names();
+
+        $sql = "SELECT 
+                e.nombre AS organo_jurisdiccional,
+                COUNT(cp.id_caso) AS total_casos
+            FROM caso_prueba cp
+            INNER JOIN especialidad e ON cp.especialidad_id = e.id_especialidad
+            WHERE cp.estado = 1
+            GROUP BY e.nombre
+            ORDER BY e.nombre ASC";
+
+        $stmt = $conectar->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /* ============================================================
+   SEGUIMIENTO POR ESPECIALIDAD (Aprobado / En Ejecución / Pendiente)
+============================================================ */
+    public function get_seguimiento_por_especialidad()
+    {
+        $conectar = parent::conexion();
+        parent::set_names();
+
+        $sql = "SELECT 
+                e.nombre AS especialidad,
+                SUM(CASE WHEN cp.estado_ejecucion = 'APROBADO' THEN 1 ELSE 0 END) AS aprobado,
+                SUM(CASE WHEN cp.estado_ejecucion = 'EN EJECUCIÓN' THEN 1 ELSE 0 END) AS en_ejecucion,
+                SUM(CASE WHEN cp.estado_ejecucion = 'PENDIENTE' THEN 1 ELSE 0 END) AS pendiente
+            FROM caso_prueba cp
+            INNER JOIN especialidad e ON cp.especialidad_id = e.id_especialidad
+            WHERE cp.estado = 1
+            GROUP BY e.nombre
+            ORDER BY e.nombre ASC";
+
+        $stmt = $conectar->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
 }
 ?>

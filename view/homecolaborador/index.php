@@ -13,15 +13,40 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
     $data_total = $requerimiento->get_total_requerimientos();
     $total_requerimientos = isset($data_total["total"]) ? (int) $data_total["total"] : 0;
 
-    // total casos de prueba (NUEVO)
+    // Total de casos de prueba
     $reporte = new Reporte();
     $data_casos = $reporte->get_total_casos_prueba();
     $total_casos_prueba = (int) ($data_casos["total"] ?? 0);
 
-    // ====== PORCENTAJE DE CASOS EJECUTADOS ======
+    // Porcentaje de casos ejecutados
     $porcentaje_data = $reporte->get_porcentaje_casos_ejecutados();
     $porcentaje_casos_ejecutados = $porcentaje_data["porcentaje"] ?? 0;
 
+    // Casos de prueba por órgano jurisdiccional
+    $casos_por_organo = $reporte->get_casos_por_organo_jurisdiccional();
+
+    $labels_organo = [];
+    $valores_organo = [];
+    foreach ($casos_por_organo as $row) {
+        $labels_organo[] = $row["organo_jurisdiccional"];
+        $valores_organo[] = (int) $row["total_casos"];
+
+        // ====== SEGUIMIENTO POR ESPECIALIDAD ======
+        $seguimiento_especialidad = $reporte->get_seguimiento_por_especialidad();
+
+        $labels_especialidad = [];
+        $data_aprobado = [];
+        $data_en_ejecucion = [];
+        $data_pendiente = [];
+
+        foreach ($seguimiento_especialidad as $row) {
+            $labels_especialidad[] = $row["especialidad"];
+            $data_aprobado[] = (int) $row["aprobado"];
+            $data_en_ejecucion[] = (int) $row["en_ejecucion"];
+            $data_pendiente[] = (int) $row["pendiente"];
+        }
+
+    }
     ?>
     <!doctype html>
     <html lang="es">
@@ -30,6 +55,38 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
         <title>Análisis de Casos por Requerimiento</title>
         <?php require_once("../html/head.php") ?>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            /* Contenedores gráficos uniformes */
+            .chart-container {
+                position: relative;
+                width: 100%;
+                height: 340px;
+            }
+
+            /* KPI Cards */
+            .kpi-card .card-body {
+                padding: 1.5rem;
+            }
+
+            .kpi-card h6 {
+                color: #6b7280;
+                margin-bottom: 0.5rem;
+            }
+
+            .kpi-card h2 {
+                font-weight: 700;
+                color: #1f2937;
+            }
+
+            .kpi-card h2.text-info {
+                color: #2563eb !important;
+            }
+
+            .card {
+                border-radius: 10px;
+                border: 1px solid #e5e7eb;
+            }
+        </style>
     </head>
 
     <body>
@@ -41,92 +98,106 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <h4 class="mb-4 text-center">Análisis de Casos por Requerimiento</h4>
+                        <h4 class="mb-4 text-center fw-bold text-secondary">
+                            Análisis de Casos por Requerimiento
+                        </h4>
 
-                        <div class="row mb-4">
-                            <!-- Total Requerimientos -->
+                        <!-- KPIs Superiores -->
+                        <div class="row mb-4 g-3">
                             <div class="col-md-4">
-                                <div class="card text-center">
+                                <div class="card kpi-card text-center shadow-sm">
                                     <div class="card-body">
-                                        <h6 class="text-muted">Total Requerimientos</h6>
-                                        <h2 class="fw-bold"><?= $total_requerimientos; ?></h2>
+                                        <h6>Total Requerimientos</h6>
+                                        <h2><?= $total_requerimientos; ?></h2>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Total Casos de Prueba (maqueta) -->
                             <div class="col-md-4">
-                                <div class="card text-center">
+                                <div class="card kpi-card text-center shadow-sm">
                                     <div class="card-body">
-                                        <h6 class="text-muted">Total Casos de Prueba</h6>
-                                        <h2 class="fw-bold"><?= $total_casos_prueba; ?></h2>
+                                        <h6>Total Casos de Prueba</h6>
+                                        <h2><?= $total_casos_prueba; ?></h2>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Porcentaje Ejecutado (maqueta) -->
                             <div class="col-md-4">
-                                <div class="card text-center">
+                                <div class="card kpi-card text-center shadow-sm">
                                     <div class="card-body">
-                                        <h6 class="text-muted">% Casos Ejecutados</h6>
-                                        <h2 class="fw-bold text-info"><?= $porcentaje_casos_ejecutados; ?>%</h2>
+                                        <h6>% Casos Ejecutados</h6>
+                                        <h2 class="text-info"><?= $porcentaje_casos_ejecutados; ?>%</h2>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <!-- Seguimiento por Órgano Jurisdiccional -->
+                        <!-- Gráficos principales -->
+                        <div class="row g-3">
                             <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-header text-center">Seguimiento por Órgano Jurisdiccional</div>
+                                <div class="card shadow-sm">
+                                    <div class="card-header text-center bg-light fw-semibold">
+                                        Seguimiento por Órgano Jurisdiccional
+                                    </div>
                                     <div class="card-body">
-                                        <canvas id="chartJurisdiccion"></canvas>
+                                        <div class="chart-container">
+                                            <canvas id="chartCasosOrgano"></canvas>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Seguimiento por Especialidad -->
                             <div class="col-md-8">
-                                <div class="card">
-                                    <div class="card-header text-center">Seguimiento por Especialidad</div>
+                                <div class="card shadow-sm">
+                                    <div class="card-header text-center bg-light fw-semibold">
+                                        Seguimiento por Especialidad
+                                    </div>
                                     <div class="card-body">
-                                        <canvas id="chartEspecialidad"></canvas>
+                                        <div class="chart-container">
+                                            <canvas id="chartEspecialidad"></canvas>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row mt-4">
-                            <!-- Línea de tiempo de ejecución -->
+                        <!-- Gráficos secundarios -->
+                        <div class="row mt-4 g-3">
                             <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header text-center">Línea de Tiempo de Ejecución</div>
+                                <div class="card shadow-sm">
+                                    <div class="card-header text-center bg-light fw-semibold">
+                                        Línea de Tiempo de Ejecución
+                                    </div>
                                     <div class="card-body">
-                                        <canvas id="chartLineaTiempo"></canvas>
+                                        <div class="chart-container">
+                                            <canvas id="chartLineaTiempo"></canvas>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Avance por Requerimiento -->
                             <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header text-center">Avance por Requerimiento</div>
+                                <div class="card shadow-sm">
+                                    <div class="card-header text-center bg-light fw-semibold">
+                                        Avance por Requerimiento
+                                    </div>
                                     <div class="card-body">
-                                        <canvas id="chartAvance"></canvas>
+                                        <div class="chart-container">
+                                            <canvas id="chartAvance"></canvas>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row mt-4">
-                            <!-- Tabla Detallada -->
+                        <!-- Tabla Detallada -->
+                        <div class="row mt-4 g-3">
                             <div class="col-12">
-                                <div class="card">
-                                    <div class="card-header text-center">Tabla Detallada de Seguimiento</div>
+                                <div class="card shadow-sm">
+                                    <div class="card-header text-center bg-light fw-semibold">
+                                        Tabla Detallada de Seguimiento
+                                    </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table table-sm table-bordered align-middle">
+                                            <table class="table table-bordered align-middle table-hover">
                                                 <thead class="table-light">
                                                     <tr>
                                                         <th>Código Requerimiento</th>
@@ -182,62 +253,99 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
         <?php require_once("../html/js.php") ?>
 
         <!-- ========== Chart.js Scripts ========== -->
-        <!-- Colores actualizados: fríos, sutiles y con degradado -->
         <script>
-            const gradient = (ctx, color1, color2) => {
-                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                gradient.addColorStop(0, color1);
-                gradient.addColorStop(1, color2);
-                return gradient;
-            };
+            function gradient(ctx, color1, color2) {
+                const grad = ctx.createLinearGradient(0, 0, 0, 300);
+                grad.addColorStop(0, color1);
+                grad.addColorStop(1, color2);
+                return grad;
+            }
 
-            const ctxJur = document.getElementById('chartJurisdiccion').getContext('2d');
-            new Chart(ctxJur, {
-                type: 'doughnut',
+            // === GRÁFICO: Seguimiento por Órgano Jurisdiccional (PIE) ===
+            const ctxOrg = document.getElementById('chartCasosOrgano').getContext('2d');
+
+            new Chart(ctxOrg, {
+                type: 'pie',
                 data: {
-                    labels: ['Laboral', 'Familiar', 'Civil'],
+                    labels: <?= json_encode($labels_organo); ?>,
                     datasets: [{
-                        data: [40, 35, 25],
+                        data: <?= json_encode($valores_organo); ?>,
                         backgroundColor: [
-                            gradient(ctxJur, '#9cc3d5ff', '#b9d9ebff'),
-                            gradient(ctxJur, '#a7c7e7', '#d4e7f5'),
-                            gradient(ctxJur, '#bcd4e6', '#e4f0f6')
+                            'rgba(96, 165, 250, 0.8)',   // Azul medio
+                            'rgba(147, 197, 253, 0.8)',  // Azul claro
+                            'rgba(191, 219, 254, 0.8)',  // Azul muy claro
+                            'rgba(219, 234, 254, 0.8)'   // Celeste pastel
                         ],
-                        borderWidth: 0
+                        borderColor: '#ffffff',
+                        borderWidth: 2
                     }]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom', labels: { color: '#4b5563' } }
-                    },
-                    cutout: '70%',
-                    responsive: true
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#4b5563', boxWidth: 15, padding: 15 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.chart._metasets[0].total;
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
                 }
             });
 
+
+            // === GRÁFICO: Seguimiento por Especialidad (DINÁMICO) ===
             const ctxEsp = document.getElementById('chartEspecialidad').getContext('2d');
             new Chart(ctxEsp, {
                 type: 'bar',
                 data: {
-                    labels: ['Laboral', 'Familiar', 'Civil'],
+                    labels: <?= json_encode($labels_especialidad); ?>,
                     datasets: [
-                        { label: 'Aprobado', data: [20, 15, 10], backgroundColor: gradient(ctxEsp, '#91bad6', '#b9d9eb') },
-                        { label: 'En Ejecución', data: [15, 10, 8], backgroundColor: gradient(ctxEsp, '#a5c8dd', '#d4e7f5') },
-                        { label: 'Pendiente', data: [5, 10, 7], backgroundColor: gradient(ctxEsp, '#d2e3ee', '#edf4fa') }
+                        {
+                            label: 'Aprobado',
+                            data: <?= json_encode($data_aprobado); ?>,
+                            backgroundColor: 'rgba(96, 165, 250, 0.8)'
+                        },
+                        {
+                            label: 'En Ejecución',
+                            data: <?= json_encode($data_en_ejecucion); ?>,
+                            backgroundColor: 'rgba(147, 197, 253, 0.8)'
+                        },
+                        {
+                            label: 'Pendiente',
+                            data: <?= json_encode($data_pendiente); ?>,
+                            backgroundColor: 'rgba(219, 234, 254, 0.9)'
+                        }
                     ]
                 },
                 options: {
                     plugins: {
-                        legend: { position: 'bottom', labels: { color: '#4b5563' } }
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#4b5563' }
+                        }
                     },
                     scales: {
-                        x: { stacked: true, grid: { display: false }, ticks: { color: '#6b7280' } },
-                        y: { stacked: true, ticks: { color: '#6b7280' } }
+                        x: { stacked: true, ticks: { color: '#6b7280' } },
+                        y: { stacked: true, ticks: { color: '#6b7280', precision: 0 } }
                     },
-                    responsive: true
+                    responsive: true,
+                    maintainAspectRatio: false
                 }
             });
 
+
+            // === GRÁFICO: Línea de Tiempo ===
             const ctxLinea = document.getElementById('chartLineaTiempo').getContext('2d');
             new Chart(ctxLinea, {
                 type: 'line',
@@ -246,12 +354,12 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
                     datasets: [{
                         label: 'Requerimientos',
                         data: [10, 25, 40, 55, 75, 100],
-                        borderColor: '#7faac8',
-                        backgroundColor: 'rgba(127, 170, 200, 0.2)',
+                        borderColor: '#60a5fa',
+                        backgroundColor: 'rgba(96, 165, 250, 0.2)',
                         fill: true,
                         tension: 0.4,
                         pointRadius: 4,
-                        pointBackgroundColor: '#4b9cd3'
+                        pointBackgroundColor: '#3b82f6'
                     }]
                 },
                 options: {
@@ -259,36 +367,31 @@ if (isset($_SESSION["usu_id"]) && count($datos) > 0) {
                     scales: {
                         x: { ticks: { color: '#6b7280' } },
                         y: { ticks: { color: '#6b7280' } }
-                    },
-                    responsive: true
+                    }
                 }
             });
 
+            // === GRÁFICO: Avance por Requerimiento ===
             const ctxAvance = document.getElementById('chartAvance').getContext('2d');
             new Chart(ctxAvance, {
                 type: 'bar',
                 data: {
                     labels: ['Startvi', 'Consultas', 'Registro'],
                     datasets: [
-                        { label: 'Aprobado', data: [5, 8, 6], backgroundColor: gradient(ctxAvance, '#9ec5d3', '#cfe5f3') },
-                        { label: 'En Ejecución', data: [10, 7, 8], backgroundColor: gradient(ctxAvance, '#b2d3e0', '#e0f1f8') },
-                        { label: 'Pendiente', data: [3, 5, 2], backgroundColor: gradient(ctxAvance, '#dce9f2', '#f1f7fa') }
+                        { label: 'Aprobado', data: [5, 8, 6], backgroundColor: gradient(ctxAvance, '#93c5fd', '#bfdbfe') },
+                        { label: 'En Ejecución', data: [10, 7, 8], backgroundColor: gradient(ctxAvance, '#a5c8dd', '#dbeafe') },
+                        { label: 'Pendiente', data: [3, 5, 2], backgroundColor: gradient(ctxAvance, '#d1d5db', '#e5e7eb') }
                     ]
                 },
                 options: {
-                    plugins: {
-                        legend: { position: 'bottom', labels: { color: '#4b5563' } }
-                    },
+                    plugins: { legend: { position: 'bottom', labels: { color: '#4b5563' } } },
                     scales: {
-                        x: { stacked: true, grid: { display: false }, ticks: { color: '#6b7280' } },
+                        x: { stacked: true, ticks: { color: '#6b7280' } },
                         y: { stacked: true, ticks: { color: '#6b7280' } }
-                    },
-                    responsive: true
+                    }
                 }
             });
         </script>
-
-
     </body>
 
     </html>
