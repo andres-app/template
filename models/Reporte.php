@@ -1,11 +1,13 @@
 <?php
-class Reporte extends Conectar {
+class Reporte extends Conectar
+{
 
     /* ============================================================
        REPORTE 1: TRAZABILIDAD DETALLADA
        (Requisito → Requerimiento → Caso de prueba)
     ============================================================ */
-    public function reporte_trazabilidad() {
+    public function reporte_trazabilidad()
+    {
         $conectar = parent::conexion();
         parent::set_names();
 
@@ -32,7 +34,8 @@ class Reporte extends Conectar {
        REPORTE 2: COBERTURA POR REQUISITO
        (Cantidad de requerimientos y casos asociados)
     ============================================================ */
-    public function reporte_cobertura() {
+    public function reporte_cobertura()
+    {
         $conectar = parent::conexion();
         parent::set_names();
 
@@ -56,7 +59,8 @@ class Reporte extends Conectar {
        REPORTE 3: CASOS POR REQUERIMIENTO
        (Total de CP agrupado por requerimiento)
     ============================================================ */
-    public function reporte_casos_por_requerimiento() {
+    public function reporte_casos_por_requerimiento()
+    {
         $conectar = parent::conexion();
         parent::set_names();
 
@@ -73,5 +77,53 @@ class Reporte extends Conectar {
         $sql->execute();
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /* ============================================================
+   TOTAL CASOS DE PRUEBA ACTIVOS
+   (Para dashboard principal)
+============================================================ */
+    public function get_total_casos_prueba()
+    {
+        $conectar = parent::conexion();
+        parent::set_names();
+
+        $sql = "SELECT COUNT(*) AS total FROM caso_prueba WHERE estado = 1";
+        $stmt = $conectar->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /* ============================================================
+   PORCENTAJE DE CASOS EJECUTADOS
+   (estado_ejecucion = 'EJECUTADO')
+============================================================ */
+    public function get_porcentaje_casos_ejecutados()
+    {
+        $conectar = parent::conexion();
+        parent::set_names();
+
+        $sql = "SELECT 
+                COUNT(*) AS total,
+                SUM(CASE WHEN estado_ejecucion = 'EJECUTADO' THEN 1 ELSE 0 END) AS ejecutados
+            FROM caso_prueba
+            WHERE estado = 1";
+        $stmt = $conectar->prepare($sql);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $total = (int) $row["total"];
+        $ejecutados = (int) $row["ejecutados"];
+
+        $porcentaje = $total > 0 ? round(($ejecutados / $total) * 100, 2) : 0;
+
+        return [
+            "total" => $total,
+            "ejecutados" => $ejecutados,
+            "porcentaje" => $porcentaje
+        ];
+    }
+
+
 }
 ?>
