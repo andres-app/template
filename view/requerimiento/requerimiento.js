@@ -115,13 +115,34 @@ $(document).ready(function() {
             }
         },
         bDestroy: true,
-        responsive: true,
+        responsive: false,   // 👈 evita colapso en escritorio
+        scrollX: true,       // 👈 activa desplazamiento horizontal
+        autoWidth: false,    // 👈 evita que calcule anchos erróneos
         bInfo: true,
         iDisplayLength: 10,
         order: [[0, "desc"]],
         columnDefs: [
-            { targets: [0], visible: false, searchable: false }
-        ],
+            { targets: [0], visible: false, searchable: false },
+            {
+                // 🔹 Controlar texto largo del campo “Nombre” (columna 3)
+                targets: 2,
+                render: function(data, type, row) {
+                    // Muestra el texto completo pero permite saltos de línea controlados
+                    const limite = 10; // cantidad máxima de palabras visibles
+                    const palabras = data.split(" ");
+                    const textoCorto = palabras.length > limite 
+                        ? palabras.slice(0, limite).join(" ") + "…" 
+                        : data;
+        
+                    // Tooltip + estilo de bloque
+                    return `
+                        <div class="nombre-columna" title="${data}">
+                            ${textoCorto}
+                        </div>
+                    `;
+                }
+            }
+        ],        
         language: {
             sProcessing: "Procesando...",
             sLengthMenu: "Mostrar _MENU_ registros",
@@ -139,8 +160,8 @@ $(document).ready(function() {
                 sPrevious: "Anterior"
             },
             oAria: {
-                sSortAscending: ": Activar para ordenar la columna de manera ascendente",
-                sSortDescending: ": Activar para ordenar la columna de manera descendente"
+                sSortAscending: ": Activar para ordenar ascendentemente",
+                sSortDescending: ": Activar para ordenar descendentemente"
             }
         }
     });
@@ -153,6 +174,7 @@ $(document).ready(function() {
         $("#mnt_modal").modal("show");
     });
 });
+
 
 // =======================================================
 // RESTAURAR MODAL AL CERRAR
